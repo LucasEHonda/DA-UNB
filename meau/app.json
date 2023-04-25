@@ -11,6 +11,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "marca": {
+      "image": "./assets/marca.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+
     "assetBundlePatterns": [
       "**/*"
     ],
