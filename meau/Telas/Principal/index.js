@@ -43,8 +43,8 @@ export default function Principal() {
       
       
       <TouchableOpacity 
-      style={styles.AJUDAR}> 
-       <Text style={styles.textoAJUDAR}>AJUDAR </Text>
+      style={styles.AJUDAR} onPress ={()=>navigation.navigate('SignUp_1')}> 
+       <Text style={styles.textoAJUDAR}>Registrar </Text>
       </TouchableOpacity>
 
       

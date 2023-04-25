@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Image } from 'react-native';
 
-const InputArea = styled.View`
+const InputArea = styled.div`
     width: 100%;
     height: 60px;
     background-color: #4444;
@@ -13,7 +13,7 @@ const InputArea = styled.View`
     margin-bottom: 20px;
 `;
 
-const Input = styled.TextInput`
+const Input = styled.div`
     flex: 1;
     font-size: 16px;
     margin-left: 10px;
