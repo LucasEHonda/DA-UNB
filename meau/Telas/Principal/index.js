@@ -49,7 +49,7 @@ export default function Principal() {
 
       
       <TouchableOpacity 
-      style={styles.CADASTRO}> 
+      style={styles.CADASTRO} onPress ={()=>navigation.navigate('Cdastrar Pet')}> 
        <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
       </TouchableOpacity>
 
