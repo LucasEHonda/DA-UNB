@@ -41,17 +41,17 @@ export const TitleText = styled.Text`
 `;
 
 export const WelcomeSign = styled.Text`
-    font-size: 24px;
-    color: #000000;
-    margin-top: 20px;
-    font-weight: bold;
+    font-size: 53px;
+    color: #88c9bf;
+    margin-top: 52px;
+    font-weight: Courgette Regular;
 `;
 
 export const SimpleText = styled.Text`
-    font-size: 18px;
-    color: #000000;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    font-size: 14px;
+    color: Roboto Regular;
+    margin-top: 52px;
+    margin-bottom: 16px;
     text-align: center;
 `;
 
