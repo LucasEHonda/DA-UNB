@@ -1,11 +1,59 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
+import { Platform } from 'react-native';
+import { useState } from 'react';
+import { signInWithEmailAndPassword,createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../src/service/firebase';
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {setloggedIn(true);
+    
+  } else { setloggedIn(false);
+    
+  }
+});
 
 
 export default function Login() {
+ const [email, setEmail] = useState('');
+ const [password, setPassword] = useState('');
+
+  async function criarUser()  {
+    if(email === '' || password === ' '){
+      alert('Preencha todos os campos')
+      return;
+    };
+
+    await createUserWithEmailAndPassword(auth,email, password)
+    .then(value=>{console.log("cadastrado \n" + value.user.uid)})
+    .catch(error => console.log(error));
+
+    
+  };
+
+  async function Logar ()  {
+    if(email === '' || password === ' '){
+    alert('Preencha todos os campos')
+    return;
+  };
+    await signInWithEmailAndPassword(auth, email, password).then(value=>{
+    console.log("Logado na conta")})
+    .catch(error =>(alert(error.messagem)));
+  };
+
+  async function sair() {
+    await signOut(auth).then(value => {console.log("Usuário deslogado")})
+    .catch(error => console.log(error));
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
       <View style={styles.retangulo1} />
       <View style={styles.retanguloLogin}>
         <Text style={styles.textoLogin}>Login</Text>
@@ -18,17 +66,34 @@ export default function Login() {
       }}>
         <TextInput
           style={styles.textoContainer}
-          placeholder="Nome de usuário"
+          placeholder="Email"
+          value={email}
+          onChangeText={value=>setEmail(value)}
         />
-        <View style={styles.retangulo3} />
+         <View style={styles.retangulo3} />
         <TextInput
           style={styles.textoContainer}
           placeholder="Senha"
+          value={password}
+          onChangeText={value=>setPassword(value)}
+         secureTextEntry
         />
         <View style={styles.retangulo3} />
       </View>
       <View style={styles.retangulo5}>
+        <TouchableOpacity onPress={()=> Logar () }>
         <Text style={styles.textoRetangulo}>ENTRAR</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.retangulo5}>
+      <TouchableOpacity onPress={()=> criarUser()}>
+        <Text style={styles.textoRetangulo}>REGISTRAR</Text>
+        </TouchableOpacity>  
+      </View>
+      <View style={styles.retangulo5}>
+      <TouchableOpacity onPress={()=> sair()}>
+        <Text style={styles.textoRetangulo}>SAIR</Text>
+        </TouchableOpacity>  
       </View>
       <View style={styles.retanguloFacebook}>
         <Text style={styles.textoFacebook}>ENTRAR COM FACEBOOK</Text>
@@ -37,6 +102,7 @@ export default function Login() {
         <Text style={styles.textoGoogle}>ENTRAR COM GOOGLE</Text>
       </View>
       <StatusBar style="auto" />
+      </KeyboardAvoidingView>  
     </SafeAreaView>
   );
 }
@@ -107,7 +173,7 @@ const styles = StyleSheet.create({
     color: '#434343',
   },
   retanguloFacebook: {
-    marginTop: 72,
+    marginTop: 56,
     width: 232,
     height: 40,
     borderWidth: 2,

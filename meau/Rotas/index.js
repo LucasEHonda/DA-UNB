@@ -9,17 +9,14 @@ const Stack = createNativeStackNavigator();
 
 
 export default function Rotas(){
-
-   
+  
  return(
  <Stack.Navigator>
     <Stack.Screen name="Desenvolvimento de Aplicativos" component={Principal}/>
     <Stack.Screen  name="Login" component={Login}/>
-    <Stack.Screen  name="Cdastrar Pet" component={CadastrarPet}/>
+    <Stack.Screen  name="Cadastrar Pet" component={CadastrarPet}/>
     <Stack.Screen  name="SignUp_1" component={Registro1}/>
     <Stack.Screen  name="SignUp_2" component={Registro2}/>
  </Stack.Navigator>
-
  )
-
 }
