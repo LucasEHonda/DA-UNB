@@ -1,332 +1,354 @@
-import React, { useEffect, useState } from "react";
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
-import {
-  Container,
-  InputArea,
-  ViewArea,
-  ViewAreaPicker,
-  ViewAreaSwitch,
-  ScrollViewPet,
-  CustomButton,
-  CustomButtonText,
-  CustomViewPicture,
-  SimpleTextBold,
-  SwitchText,
-  ViewRadioButton,
-  ViewAllRadioButton,
-  PetPicture,
-  RadioButtonText,
-  LoadingIcon
-} from "./styles";
-// import ButtonRequest from "../../components/ButtonRequest";
-import PetInput from "../../components/PetInput";
-import { useNavigation } from "@react-navigation/native";
-import { Alert } from "react-native";
-// import { auth, db, storage } from "../../../firebase";
-import * as ImagePicker from "expo-image-picker";
-import Header from "../../components/Header";
-import { Switch, RadioButton, TextInput } from 'react-native-paper';
+import React, { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 
-export default function CadastrarPet (){
-  const navigation = useNavigation();
+export default function CadastrarPet() {
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  const [name, setNameField] = useState("Pet");
-  const [sex, setSexField] = useState("Macho");
-  const [specie, setSpecieField] = useState("Cachorro");
-  const [size, setSizeField] = useState("Pequeno");
-  const [age, setAgeField] = useState("Filhote");
-  const [adoptionStatus, setAdoptionStatus] = useState(false);
-  const [avatar, setAvatar] = useState();
-  const [fileName, setFileName] = useState("ImagemPet");
-  const [descripton, setDescripton] = useState("");
-  const [petProfilePicture, setPetProfilePicture] = useState();
-  const [loading, setLoading] = useState(false)
-  const [screenLoading, setScreenLoading] = useState(true);
-  const [isSwitchOn, setIsSwitchOn] = useState()
-  const idPet = uuidv4();
-
-  // const handleRegisterClick = () => {
-  //   auth;
-  //   const colect = db.collection("Pet");
-  //   const myDoc = colect.doc(idPet);
-  //   const fotoPet = petProfilePicture ? petProfilePicture : "https://static.thenounproject.com/png/703110-200.png"
-
-  //   const data = {
-  //     donoId: auth.currentUser?.uid,
-  //     nome: name,
-  //     sexo: sex,
-  //     especie: specie,
-  //     porte: size,
-  //     idade: age,
-  //     fotoPet: fotoPet,
-  //     id: idPet,
-  //     fileNamePicture: fileName,
-  //     statusAdocao: adoptionStatus,
-  //     descripton: descripton
-  //   };
-
-  //   myDoc
-  //     .set(data)
-  //     .then(() => {
-  //       alert("Lista de Animais atualizada com sucesso!");
-  //       navigation.navigate("Meus Pets");
-  //     })
-  //     .catch((error) => alert(error.message));
-  // };
-
-  const handleCancelClick = () => {
-    auth;
-    navigation.navigate("Inicio");
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
   };
 
-  const handlePictureResgister = () => {
-    Alert.alert(
-      "Selecione",
-      "Informe de onde você quer pegar a foto",
-      [
-        {
-          text: "Galeria",
-          onPress: () => pickImageFromGalery(),
-          style: "default",
-        },
-        {
-          text: "Camera",
-          onPress: () => pickImageFromCamera(),
-          style: "default",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => console.log("----> Ação cancelada"),
-      }
-    );
-  };
-
-  const pickImageFromGalery = async () => {
-    console.log("-----> Clicou na Galeria");
-    const options = {
-      noData: true,
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-    };
-
-    let result = await ImagePicker.launchImageLibraryAsync(options);
-
-    handleUpload(result.uri);
-  };
-
-  const pickImageFromCamera = async () => {
-    console.log("-----> Clicou na Camera");
-
-    const options = {
-      noData: true,
-      saveToPhotos: true,
-      mediaType: 'photo',
-      includeBase64: false,
-      allowsEditing: true,
-    };
-
-    let result = await ImagePicker.launchCameraAsync(options);
-
-    handleUpload(result.uri);
-  };
-
-  async function handleUpload(file) {
-    const fileName = uuidv4();
-    setFileName(fileName);
-    const donoID = auth.currentUser?.uid;
-    const blob = await (await fetch("file://" + file)).blob();
-    // console.log("----> Eu sou Blob", blob)
-    const uploadTask = storage
-      .ref("profilePetPicture/" + donoID + "/" + fileName)
-      // .ref("profilePetPicture/" + donoID + "/" + fileName)
-      .put(blob);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        console.log("Upload Image");
-        setLoading(true)
-        let progress = snapshot.bytesTransferred / snapshot.totalBytes
-        if (progress === 1) {
-          console.log(progress);
-          setTimeout(function () {
-            getUrlImage(donoID, fileName);
-          }, 1000);
-        }
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  const getUrlImage = (donoID, fileName) => {
-    let imageRef = storage.ref("profilePetPicture/" + donoID + "/" + fileName)
-    imageRef
-      .getDownloadURL()
-      .then((url) => {
-        setAvatar(url)
-        setPetProfilePicture(url);
-        setLoading(false)
-      })
-      .catch((e) => console.log("getting downloadURL of image error => ", e));
-  };
-
-  useEffect(() => {
-    setScreenLoading(false)
-  }, []);
   return (
-    <Container>
-      <Header
-        title={"Cadastrar Pet"}
-      />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.retangulo1} />
+      <View style={styles.retanguloCadastroAnimal}>
+        <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
+        <Text style={styles.textoCadastroAnimal}>Cadastro do Animal</Text>
+      </View>
 
-      {screenLoading ? (<LoadingIcon size="large" color="black" />) :
-        (<ScrollViewPet>
-          <InputArea>
+      <View style={styles.Mensagem}>
+        <Text style={styles.textoMensagem}>Tenho interesse em cadastrar o animal para:</Text>
+      </View>
 
-            <PetInput
-              placeholder="Nome do pet"
-              onChangeText={(t) => setNameField(t)}
-            />
+      <View style={styles.botoesContainer}>
+        <TouchableOpacity style={styles.BotaoADOCAO}>
+          <Text style={styles.textoBotaoADOCAO}>ADOÇÃO</Text>
+        </TouchableOpacity>
 
-            <ViewArea>
-              {avatar && (
-                <CustomViewPicture>
-                  <PetPicture source={{ uri: petProfilePicture }} />
-                </CustomViewPicture>
-              )}
+        <TouchableOpacity style={styles.BotaoAJUDA}>
+          <Text style={styles.textoBotaoAJUDA}>AJUDA</Text>
+        </TouchableOpacity>
+      </View>
 
-            </ViewArea>
+      <View style={styles.MensagemADOCAO}>
+        <Text style={styles.textoMensagemADOCAO}>Adoção</Text>
+      </View>
 
-            {/* <ButtonRequest
-              title={"Adicionar foto do pet"}
-              onPress={handlePictureResgister}
-              isLoading={loading}
-            >
+      <View style={styles.NomeAnimal}>
+        <Text style={styles.textoNomeAnimal}>NOME ANIMAL</Text>
+      </View>
 
-            </ButtonRequest> */}
+      <View style={styles.inputNomeAnimal}>
+        <TextInput
+          style={styles.textoinputNomeAnimal}
+          placeholder="Nome do animal"
+          placeholderTextColor="#bdbdbd"
+        />
+        </View>
 
-            <ViewAreaPicker>
+        <View style={styles.divisoria} />
 
-              <SimpleTextBold>Selecione o sexo do animal</SimpleTextBold>
-              <RadioButton.Group
-                onValueChange={value => setSexField(value)}
-                value={sex}
-              >
-                <ViewAllRadioButton>
-                  <ViewRadioButton>
-                    <RadioButton value="Macho" color={"black"} />
-                    <RadioButtonText>Macho</RadioButtonText>
-                  </ViewRadioButton>
+      <View style={styles.FotosAnimal}>
+        <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
+      </View>
 
-                  <ViewRadioButton>
-                    <RadioButton value="Fêmea" color={"black"} />
-                    <RadioButtonText>Fêmea</RadioButtonText>
-                  </ViewRadioButton>
-                </ViewAllRadioButton>
-              </RadioButton.Group>
+      <View style={styles.Especie}>
+        <Text style={styles.textoEspecie}>ESPÉCIE</Text>
+      </View>
 
-              <SimpleTextBold>Selecione a espécie do animal</SimpleTextBold>
-              <RadioButton.Group
-                onValueChange={value => setSpecieField(value)}
-                value={specie}
-              >
-                <ViewAllRadioButton>
-                  <ViewRadioButton>
-                    <RadioButton value="Cachorro" color={"black"} />
-                    <RadioButtonText>Cachorro</RadioButtonText>
-                  </ViewRadioButton>
+      <View style={styles.configContainer}>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedOption === 'opcao1' && styles.selectedOption]}
+          onPress={() => handleOptionSelect('opcao1')}
+        >
+          {selectedOption === 'opcao1' && <AntDesign name="checkcircle" size={24} style={styles.iconSelected} />}
+          <Text style={styles.optionText}>Cachorro</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.optionButton, selectedOption === 'opcao2' && styles.selectedOption]}
+          onPress={() => handleOptionSelect('opcao2')}
+        >
+          {selectedOption === 'opcao2' && <AntDesign name="checkcircle" size={24} style={styles.iconSelected} />}
+          <Text style={styles.optionText}>Gato</Text>
+        </TouchableOpacity>
+      </View>
 
-                  <ViewRadioButton>
-                    <RadioButton value="Gato" color={"black"} />
-                    <RadioButtonText>Gato</RadioButtonText>
-                  </ViewRadioButton>
-                </ViewAllRadioButton>
-              </RadioButton.Group>
 
-              <SimpleTextBold>Selecione o porte do animal</SimpleTextBold>
-              <RadioButton.Group
-                onValueChange={value => setSizeField(value)}
-                value={size}
-              >
-                <ViewAllRadioButton>
-                  <ViewRadioButton>
-                    <RadioButton value="Pequeno" color={"black"} />
-                    <RadioButtonText>Pequeno</RadioButtonText>
-                  </ViewRadioButton>
 
-                  <ViewRadioButton>
-                    <RadioButton value="Médio" color={"black"} />
-                    <RadioButtonText>Médio</RadioButtonText>
-                  </ViewRadioButton>
+      <View style={styles.Sexo}>
+        <Text style={styles.textoSexo}>SEXO</Text>
+      </View>
+      
 
-                  <ViewRadioButton>
-                    <RadioButton value="Grande" color={"black"} />
-                    <RadioButtonText>Grande</RadioButtonText>
-                  </ViewRadioButton>
-                </ViewAllRadioButton>
-              </RadioButton.Group>
+      <View style={styles.Porte}>
+        <Text style={styles.textoPorte}>PORTE</Text>
+      </View>
 
-              <SimpleTextBold>Selecione a idade do animal</SimpleTextBold>
-              <RadioButton.Group
-                onValueChange={value => setAgeField(value)}
-                value={age}
-              >
-                <ViewAllRadioButton>
-                  <ViewRadioButton>
-                    <RadioButton value="Filhote" color={"black"} />
-                    <RadioButtonText>Filhote</RadioButtonText>
-                  </ViewRadioButton>
+      <View style={styles.Especie}>
+        <Text style={styles.textoIdade}>IDADE</Text>
+      </View>
 
-                  <ViewRadioButton>
-                    <RadioButton value="Adulto" color={"black"} />
-                    <RadioButtonText>Adulto</RadioButtonText>
-                  </ViewRadioButton>
+      <View style={styles.Temperamento}>
+        <Text style={styles.textoTemperamento}>TEMPERAMENTO</Text>
+      </View>
 
-                  <ViewRadioButton>
-                    <RadioButton value="Idoso" color={"black"} />
-                    <RadioButtonText>Idoso</RadioButtonText>
-                  </ViewRadioButton>
-                </ViewAllRadioButton>
-              </RadioButton.Group>
+      <View style={styles.Saude}>
+        <Text style={styles.textoSaude}>SAÚDE</Text>
+      </View>
 
-              <TextInput
-                label='Descrição do pet'
-                value={descripton}
-                onChangeText={text => setDescripton(text)}
-                style={{ marginTop: 10 }}
-                multiline={true}
-                theme={{ colors: { primary: "black" } }}
-                selectionColor={'black'}
-              />
+      <View style={styles.Exigencias}>
+        <Text style={styles.textoExigencias}>EXIGÊNCIAS PARA ADOÇÃO</Text>
+      </View>
 
-              <SimpleTextBold>Animal para adoção?</SimpleTextBold>
-              <ViewAreaSwitch>
-                <Switch
-                  value={isSwitchOn}
-                  onValueChange={(itemValue) => (setIsSwitchOn(itemValue), setAdoptionStatus(itemValue))}
-                  color={"black"}
-                />
-                {!!isSwitchOn ? <SwitchText >Disponível</SwitchText> : <SwitchText>Não disponível</SwitchText>}
-              </ViewAreaSwitch>
+      <View style={styles.Sobre}>
+        <Text style={styles.textoSobre}>SOBRE O ANIMAL</Text>
+      </View>
+      
 
-            </ViewAreaPicker>
 
-            {/* <CustomButton onPress={handleRegisterClick}> */}
-            <CustomButton onPress={{}}>
-              <CustomButtonText>Cadastrar pet</CustomButtonText>
-            </CustomButton>
 
-            <CustomButton onPress={handleCancelClick}>
-              <CustomButtonText>Cancelar</CustomButtonText>
-            </CustomButton>
-          </InputArea>
-        </ScrollViewPet>)}
 
-    </Container>
+
+      <StatusBar style="auto" />
+    </SafeAreaView>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  retangulo1: {
+    width: 360,
+    height: 24,
+    backgroundColor: '#f7a800',
+  },
+  retanguloCadastroAnimal: {
+    width: 360,
+    height: 56,
+    backgroundColor: '#ffd358',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textoCadastroAnimal: {
+    fontFamily: 'Roboto_500Medium',
+    fontSize: 20,
+    color: '#434343',
+    position: 'absolute',
+    left: 36,
+    top: 18,
+    marginLeft: 37,
+  },
+  iconArrow: {
+    position: 'absolute',
+    color: '#434343',
+    left: 16,
+    top: 18,
+  },
+  Mensagem: {
+    marginBottom: 16,
+    marginTop: 16,
+  },
+  textoMensagem: {
+    fontSize: 14,
+    color: '#757575',
+    fontFamily: 'Roboto_400Regular',
+  },
+  botoesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+  },
+  BotaoADOCAO: {
+    width: 100,
+    height: 40,
+    borderWidth: 2,
+    borderColor: '#ffd358',
+    backgroundColor: '#ffd358',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 50,
+
+  },
+  textoBotaoADOCAO: {
+    color: '#434343',
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+  },
+  BotaoAJUDA: {
+    width: 100,
+    height: 40,
+    borderWidth: 2,
+    borderColor: '#f1f2f2',
+    backgroundColor: '#f1f2f2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 50,
+  },
+  textoBotaoAJUDA: {
+    color: '#434343',
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+  },
+  MensagemADOCAO: {
+    marginTop: 24,
+    marginRight: 270,
+    marginLeft: 24,
+  },
+  textoMensagemADOCAO: {
+    fontSize: 16,
+    fontFamily: 'Roboto_500Medium',
+    color: '#434343',
+  },
+  NomeAnimal: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoNomeAnimal: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  inputNomeAnimal: {
+    width: 312,
+    marginTop: 8,
+    marginLeft: 24,
+    marginTop: 20,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#fafafa',
+    fontFamily: 'Roboto_400Regular',
+  },
+  divisoria: {
+    marginTop: 8,
+    width: 312,
+    height: 0.8,
+    backgroundColor: '#e6e7e8',
+  },
+  FotosAnimal: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoFotosAnimal: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  configContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  optionButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#757575',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 100,
+    flexDirection: 'row',
+  },
+  optionText: {
+    fontFamily: 'Roboto_400Regular',
+    color: '#757575',
+    fontSize: 14,
+    marginLeft: 100,
+  },
+  selectedOption: {
+    backgroundColor: '#757575',
+  },
+  iconSelected: {
+    color: '#fff',
+  },
+  Especie: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoEspecie: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Sexo: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoSexo: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Porte: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoPorte: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Idade: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoIdade: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Temperamento: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoTemperamento: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Saude: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoSaude: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Exigencias: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoExigencias: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+  Sobre: {
+    marginTop: 20,
+    marginRight: 240,
+    marginLeft: 24,
+  },
+  textoSobre: {
+    fontSize: 12,
+    fontFamily: 'Roboto_400Regular',
+    color: '#f7a800',
+  },
+
+});
