@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView } from 'react-native';
 import { db } from '../../service/firebase';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
 
 export default function Registro1() {
 
@@ -12,6 +12,9 @@ export default function Registro1() {
   async function getUsers(){
     const data = await getDocs(userCollectionRef)
     console.log(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
+  }
+  async function deleteUser(user_id){
+    const user_ = await deleteDoc(userCollectionRef, user_id)
   }
 
   const userCollectionRef = collection(db, "users")
