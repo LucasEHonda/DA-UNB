@@ -8,7 +8,7 @@ export default function Registro1() {
     <SafeAreaView style={styles.container}>
       <View style={{
         width: 360,
-        marginTop: 50,
+        marginTop: 10,
         paddingVertical: '10px',
         paddingLeft: '5px',
       }}>
@@ -87,15 +87,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },  
-  Main: {
-    width: 516,
-    height: 522,
-    flex: 1,
-    backgroundColor: '#fafafa',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },  
-  
+
+    
   retangulo1: {
     width: 360,
     height: 24,
@@ -131,6 +124,7 @@ const styles = StyleSheet.create({
     color: '#434343',
     justifyContent: 'center',
     alignItems: 'center',
+    textAlign: 'start',
   },
   textoInfo: {
     color: '#cfe9e5',
