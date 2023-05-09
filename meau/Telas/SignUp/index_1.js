@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView } from 'react-native';
-
+import { db } from '../../service/firebase';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 
 export default function Registro1() {
+
+  async function createUser(user){
+    const user_ = await addDoc(userCollectionRef, user)
+  }
+  async function getUsers(){
+    const data = await getDocs(userCollectionRef)
+    console.log(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
+  }
+
+  const userCollectionRef = collection(db, "users")
+  useEffect(()=>{
+  }, [])
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={{

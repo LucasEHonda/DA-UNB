@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 import { useState } from 'react';
 import { signInWithEmailAndPassword,createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../src/service/firebase';
+import { auth } from '../../service/firebase';
 
 
 onAuthStateChanged(auth, (user) => {
