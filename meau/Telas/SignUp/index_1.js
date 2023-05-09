@@ -1,164 +1,185 @@
-import React, { useState } from 'react'
-import * as ImagePicker from "expo-image-picker";
-import { Alert } from "react-native";
-import {
-  Container,
-  SimpleText,
-  WelcomeSign,
-  InputArea,
-  CustomButton,
-  CustomButtonText,
-  SignMessageButton,
-  SignMessageButtonText,
-  SignMessageButtonTextBold,
-  SimpleTextImg,
-  ContentImg,
-  Avatar,
-  ScrollViewSignUp
-} from './styles'
-
-import SignInput from '../../components/SignInput'
-import { useNavigation } from '@react-navigation/native'
-
-// import { auth } from '../../../firebase'
+import React from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, TextInput, SafeAreaView } from 'react-native';
 
 
-export default function Registro1(){
-
-  const navigation = useNavigation();
-
-  const [email, setEmailField] = useState('');
-  const [password, setPasswordField] = useState('');
-  const [name, setName] = useState('');
-  const [profilePicture, setProfilePicture] = useState('https://sdama.org/wp-content/themes/sama/img/fallback-profile.jpg');
-
-  const handleSignUpClick = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(userCredentials => {
-        const user = userCredentials.user;
-        user.updateProfile({
-          displayName: name,
-          photoURL: profilePicture
-        })
-
-
-        console.log("Resgistrado com email: ", user.email);
-        navigation.navigate("SignUp_2")
-      })
-      .catch(error => alert(error.message))
-  }
-  // console.log(">>>>>>>>>>>>>> a", a);
-  const handleBackClick = () => {
-    navigation.reset({
-      routes: [{ name: 'SignIn' }]
-    });
-  }
-
-  const handleImageUser = () => {
-    Alert.alert(
-      "Selecione",
-      "Informe de onde você quer pegar a foto",
-      [
-        {
-          text: "Galeria",
-          onPress: () => pickImageFromGalery(),
-          style: "default",
-        },
-        {
-          text: "Camera",
-          onPress: () => pickImageFromCamera(),
-          style: "default",
-        },
-      ],
-      {
-        cancelable: true,
-        onDismiss: () => console.log("----> Ação cancelada"),
-      }
-    );
-  };
-
-  const pickImageFromGalery = async () => {
-    console.log("-----> Clicou na Galeria");
-    const options = {
-      noData: true,
-      selectionLimit: 1, // Se deixar 1, será permitido apenas uma foto e 0 várias
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-    };
-
-    let result = await ImagePicker.launchImageLibraryAsync(options);
-
-    setProfilePicture(result.uri)
-
-  };
-
-  const pickImageFromCamera = async () => {
-    console.log("-----> Clicou na Camera");
-
-    const options = {
-      noData: true,
-    };
-
-    let result = await ImagePicker.launchCameraAsync(options);
-
-    setProfilePicture(result.uri)
-
-  };
-
+export default function Registro1() {
   return (
-    <Container>
+    <SafeAreaView style={styles.container}>
+      <View style={{
+        width: 360,
+        marginTop: 50,
+        paddingVertical: '10px',
+        paddingLeft: '5px',
+      }}>
+      <View style={styles.retangulo1} />
+      <View style={styles.retanguloCadastro}>
+        <Text style={styles.textoCadastro}>Cadastro Pessoal</Text>
+      </View>
 
-      <ScrollViewSignUp
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-
-        <InputArea>
-
-          <WelcomeSign>Faça seu cadastro!</WelcomeSign>
-
-          <SimpleText>Etapa 1 de 2</SimpleText>
-
-          <ContentImg onPress={() => handleImageUser()}>
-            <Avatar source={{ uri: profilePicture }} />
-          </ContentImg>
-
-          <SimpleTextImg>Selecione um foto de perfil</SimpleTextImg>
-
-          <SignInput
-            placeholder="Nome"
-            value={name}
-            onChangeText={t => setName(t)}
-
-          />
-
-          <SignInput
-            placeholder="Email"
-            value={email}
-            onChangeText={t => setEmailField(t)}
-            keyboardType={'email-address'}
-          />
-
-          <SignInput
-            placeholder="Senha"
-            value={password}
-            onChangeText={t => setPasswordField(t)}
-            password={true}
-          />
-
-          <CustomButton onPress={handleSignUpClick}>
-            <CustomButtonText>Continuar</CustomButtonText>
-          </CustomButton>
-
-          <SignMessageButton onPress={handleBackClick}>
-            <SignMessageButtonText>Já possui uma conta?</SignMessageButtonText>
-            <SignMessageButtonTextBold>Faça Login</SignMessageButtonTextBold>
-          </SignMessageButton>
-
-        </InputArea>
-
-      </ScrollViewSignUp>
-
-    </Container>
+      
+      <View style={styles.descricao}>
+        <Text style={styles.textoDescricao}>As informações preenchidas serão divulgadas apenas para a pessoa com a qual você realizar
+        o processo de adoção e/ou apadrinhamento, após a formalização do processo.</Text>
+      </View>
+      <View style={styles.textoInfo}>
+        <Text style={styles.textoInfo}>INFORMAÇÕES PESSOAIS</Text>
+      </View>
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Nome completo"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Idade"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="E-mail"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Estado"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Cidade"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Endereço"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Telefone"
+        />
+        <View style={styles.retangulo3} />
+        <View style={styles.textoInfo2}>
+        <Text style={styles.textoInfo2}>INFORMAÇÕES DE PERFIL</Text>
+      </View>
+      <TextInput
+          style={styles.textoContainer}
+          placeholder="Nome de usuário"
+        />
+        <View style={styles.retangulo3} />
+        <TextInput
+          style={styles.textoContainer}
+          placeholder="Senha"
+        />
+        <View style={styles.retangulo3} />
+        </View>
+      
+      <StatusBar style="auto" />
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },  
+  Main: {
+    width: 516,
+    height: 522,
+    flex: 1,
+    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },  
+  
+  retangulo1: {
+    width: 360,
+    height: 24,
+    backgroundColor: '#88c9bf',
+  },
+  retanguloCadastro: {
+    width: 360,
+    height: 56,
+    backgroundColor: '#cfe9e5',
+  },
+  textoCadastro: {
+    fontFamily: 'Arial',
+    fontSize: 20,
+    color: '#434343',
+    textAlign: 'start',
+    paddingTop: 18,
+    marginLeft: 65,
+  },
+  descricao: {
+    marginTop: 16,
+    width: 328,
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#cfe9e5',
+    borderWidth: 4,
+    borderColor: '#cfe9e5',
+    marginBottom: 28,
+  },
+  textoDescricao: {
+    fontFamily: 'Arial',
+    fontSize: 14,
+    color: '#434343',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textoInfo: {
+    color: '#cfe9e5',
+    marginBottom: 32,
+  },
+  textoInfo2: {
+    color: '#cfe9e5',
+    marginTop: 28,
+    marginBottom: 32,
+  },
+
+  textoContainer: {
+    marginTop: 20,
+    fontFamily: 'Arial',
+    fontSize: 14,
+    color: '#bdbdbd',
+  },
+  retangulo3: {
+    marginTop: 8,
+    width: '100%',
+    height: 0.8,
+    backgroundColor: '#e6e7e8',
+  },
+  textoContainer2: {
+    marginTop: 20,
+    fontFamily: 'Arial',
+    fontSize: 14,
+    color: '#bdbdbd',
+  },
+  retangulo4: {
+    marginTop: 8,
+    width: 312,
+    height: 0.8,
+    backgroundColor: '#e6e7e8',
+  },
+  retangulo5: {
+    marginTop: 10,
+    width: 232,
+    height: 40,
+    borderWidth: 2,
+    backgroundColor: '#88c9bf',
+    borderColor: '#88c9bf',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textoRetangulo: {
+    fontFamily: 'Arial',
+    fontSize: 12,
+    color: '#434343',
+  },
+
+});

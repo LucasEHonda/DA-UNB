@@ -180,10 +180,10 @@ export default function CadastrarPet (){
   }, []);
   return (
     <Container>
-      <Header
-        title={"Cadastrar Pet"}
+      <Header 
+        title={"Cadastro do Animal"}
       />
-
+      
       {screenLoading ? (<LoadingIcon size="large" color="black" />) :
         (<ScrollViewPet>
           <InputArea>

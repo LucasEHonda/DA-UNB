@@ -44,7 +44,7 @@ export default function Principal() {
       
       <TouchableOpacity 
       style={styles.AJUDAR} onPress ={()=>navigation.navigate('SignUp_1')}> 
-       <Text style={styles.textoAJUDAR}>Registrar </Text>
+       <Text style={styles.textoAJUDAR}>REGISTRAR </Text>
       </TouchableOpacity>
 
       

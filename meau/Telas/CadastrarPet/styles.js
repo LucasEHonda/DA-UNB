@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 
 /* VIEW */
 export const Container = styled.SafeAreaView`
-    background-color: #58BD97;
+    background-color: #ffd358;
     width: 100%;
     justify-content: center;
     align-items: center;
