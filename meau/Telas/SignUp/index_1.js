@@ -16,6 +16,7 @@ export default function Registro1() {
 
   const userCollectionRef = collection(db, "users")
   useEffect(()=>{
+    getUsers()
   }, [])
 
   
