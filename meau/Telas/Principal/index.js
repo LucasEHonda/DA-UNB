@@ -1,7 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,  SafeAreaView, Image, TouchableOpacity } from 'react-native';
-import{ImageBackground} from 'react-native';
+import { StyleSheet, Text, View,  SafeAreaView, TouchableOpacity, Image} from 'react-native' 
 import { useNavigation } from '@react-navigation/native';
+import { Octicons } from '@expo/vector-icons';
+import LogoSrc from "./images/Meau_marca_2.png";
+
 
 
 export default function Principal() {
@@ -9,12 +11,12 @@ export default function Principal() {
   
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground source={'./assets/Malha.png'} 
-       resizeMode="cover" 
-       style={{width:'100%'}}>
-        </ImageBackground>
-      
 
+      <TouchableOpacity onPress={() => { }}>
+        <View style={styles.Menu}>
+          <Octicons name="three-bars" size={24} color="#88c9bf" />
+        </View>
+      </TouchableOpacity>
 
       <View style={styles.Ola}>
       <Text style={styles.TextoOla}>Olá!</Text>
@@ -37,41 +39,32 @@ export default function Principal() {
 
       <TouchableOpacity 
       style={styles.ADOTAR}> 
-       <Text style={styles.textoADOTAR}>AJUDAR </Text>
+       <Text style={styles.textoADOTAR}>ADOTAR </Text>
       </TouchableOpacity>
            
       
-      
       <TouchableOpacity 
-      style={styles.AJUDAR} onPress ={()=>navigation.navigate('SignUp_1')}> 
-       <Text style={styles.textoAJUDAR}>REGISTRAR </Text>
+      style={styles.AJUDAR} >
+       <Text style={styles.textoAJUDAR}>AJUDAR </Text>
       </TouchableOpacity>
 
       
       <TouchableOpacity 
-      style={styles.CADASTRO} onPress ={()=>navigation.navigate('Cdastrar Pet')}> 
+      style={styles.CADASTRO} 
+      onPress ={()=>navigation.navigate('Cadastrar Pet')}> 
        <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
       </TouchableOpacity>
 
       
       <TouchableOpacity 
-      style={styles.lOGIN} 
-      onPress ={()=>navigation.navigate('Login')}> 
+      style={styles.LOGIN} 
+      onPress ={()=>navigation.navigate('Cadastrar Pessoa')}> 
        <Text style={styles.textoLogin}> login </Text>
       </TouchableOpacity>
-      
-      
-      
-      <View style={styles.IMAGE}>
-      <Image 
-           
-         source = {('./assets/marca.png')}
-         style = {{width:'100%'}}
-         resizeMode="contain"
-         color= '#88c9bf'/>
-     </View>  
 
-          
+      <View>
+        <Image source={LogoSrc} style={styles.logoImage} />
+      </View>
 
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -85,24 +78,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  Menu: {
+    marginTop: 12,
+    marginRight: 300,
+
+  },
+
   Ola: {
-    marginTop:56,
+    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   TextoOla: {
-    fontFamily: 'Courgette Regular',
+    fontFamily: 'Courgette_400Regular',
     fontSize: 72,
     color: '#ffd358',
   },
 
   Bemvindo: {
-    marginTop: '52',
+    marginTop: 52,
     width: '48',
   },
 
   textoBemvindo: {
-    fontFamily: 'Roboto Regular ',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 16,
     color: '#757575',
     textAlign: 'center',
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
   },
 
   textoADOTAR: {
-    fontFamily: 'Roboto Regular',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: '#434343',
     
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
   },
 
   textoAJUDAR: {
-    fontFamily: 'Roboto Regular',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: '#434343',
     
@@ -160,30 +159,29 @@ const styles = StyleSheet.create({
   },
   
   textoCADASTRO: {
-    fontFamily: 'Roboto Regular',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: '#434343',
     
   },
 
-  lOGIN: {
+  LOGIN: {
     marginTop: 44,
     justifyContent: 'center',
     alignItems: 'center'
   },
   textoLogin: {
-    fontFamily: 'Roboto Regular',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 16,
     color: '#88c9bf',
   },
 
-  IMAGE: {
-  marginTop: 28,
-  marginBottom: 1,
-  width: 122,
-  height: 44,
-  alignItems: 'center'
-   },
-  
+  logoImage: {
+    marginTop: 68,
+    marginBottom: 32,
+    width: 122,
+    height: 44,
+  },
+
 
 });
