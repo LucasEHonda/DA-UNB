@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
 import { Octicons, Feather } from '@expo/vector-icons';
@@ -6,6 +6,8 @@ import { Platform } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../service/firebase';
+import { db } from '../../service/firebase';
+import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
 
 export default function RegistrarUsuario() {
   const [nome, setNome] = useState('');
@@ -74,6 +76,23 @@ export default function RegistrarUsuario() {
     
   };
 
+  async function createUser(user){
+    const user_ = await addDoc(userCollectionRef, user)
+  }
+  async function getUsers(){
+    const data = await getDocs(userCollectionRef)
+    console.log(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
+  }
+  async function deleteUser(user_id){
+    const user_ = await deleteDoc(userCollectionRef, user_id)
+  }
+
+  const userCollectionRef = collection(db, "users")
+  useEffect(()=>{
+    getUsers()
+  }, [])
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
