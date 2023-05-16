@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Alert } from 'react-native';
-import { Platform } from 'react-native';
-import { useState } from 'react';
-import { signInWithEmailAndPassword,createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { StyleSheet, Text, View, TextInput,
+SafeAreaView, KeyboardAvoidingView,
+TouchableOpacity, Platform } from 'react-native';
+import { Octicons, Ionicons, Entypo } from '@expo/vector-icons';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../service/firebase';
-
 
 onAuthStateChanged(auth, (user) => {
   if (user) {setloggedIn(true);
@@ -16,26 +16,12 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-
 export default function Login() {
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
-
-  async function criarUser()  {
-    if(email === '' || password === ' '){
-      alert('Preencha todos os campos')
-      return;
-    };
-
-    await createUserWithEmailAndPassword(auth,email, password)
-    .then(value=>{console.log("cadastrado \n" + value.user.uid)})
-    .catch(error => console.log(error));
-
-    
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   async function Logar ()  {
-    if(email === '' || password === ' '){
+    if(email === '' || password === ' ') {
     alert('Preencha todos os campos')
     return;
   };
@@ -44,65 +30,74 @@ export default function Login() {
     .catch(error =>(alert(error.messagem)));
   };
 
+  const handleEmailChange = (value) => {
+    setEmail(value);
+  };
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+  };
+
   async function sair() {
     await signOut(auth).then(value => {console.log("Usuário deslogado")})
     .catch(error => console.log(error));
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <View style={styles.retangulo1} />
-      <View style={styles.retanguloLogin}>
-        <Text style={styles.textoLogin}>Login</Text>
-      </View>
-      <View style={{
-        width: 360,
-        marginTop: 50,
-        paddingVertical: '10px',
-        paddingLeft: '5px',
-      }}>
-        <TextInput
-          style={styles.textoContainer}
-          placeholder="Email"
-          value={email}
-          onChangeText={value=>setEmail(value)}
-        />
-         <View style={styles.retangulo3} />
-        <TextInput
-          style={styles.textoContainer}
-          placeholder="Senha"
-          value={password}
-          onChangeText={value=>setPassword(value)}
-         secureTextEntry
-        />
-        <View style={styles.retangulo3} />
-      </View>
-      <View style={styles.retangulo5}>
-        <TouchableOpacity onPress={()=> Logar () }>
-        <Text style={styles.textoRetangulo}>ENTRAR</Text>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <View style={styles.retangulo1} />
+        <View style={styles.retanguloLogin}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconMenu}>
+              <Octicons name="three-bars" size={24} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.textoLogin}>Login</Text>
+        </View>
+        <View style={styles.textInputContainer}>
+          <TextInput
+            style={[styles.textInput, email ? styles.textInputFilled : null]}
+            placeholder="Nome de usuário"
+            placeholderTextColor="#bdbdbd"
+            value={email}
+            onChangeText={handleEmailChange}
+          />
+          <View style={styles.separatorLine} />
+          <TextInput
+            style={[styles.textInput, password ? styles.textInputFilled : null]}
+            placeholder="Senha"
+            placeholderTextColor="#bdbdbd"
+            value={password}
+            onChangeText={handlePasswordChange}
+            secureTextEntry
+          />
+          <View style={styles.separatorLine} />
+        </View>
+
+        <View style={styles.botaoEntrar}>
+          <TouchableOpacity onPress={()=> Logar () }>
+            <Text style={styles.textoBotaoEntrar}>ENTRAR</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.botaoEntrar}>
+          <TouchableOpacity onPress={()=> sair () }>
+            <Text style={styles.textoBotaoEntrar}>SAIR</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.botaoFacebook}>
+          <Ionicons name="logo-facebook" size={16} style={styles.iconFacebook} />
+          <Text style={styles.textoBotaoFacebook}>ENTRAR COM FACEBOOK</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.retangulo5}>
-      <TouchableOpacity onPress={()=> criarUser()}>
-        <Text style={styles.textoRetangulo}>REGISTRAR</Text>
-        </TouchableOpacity>  
-      </View>
-      <View style={styles.retangulo5}>
-      <TouchableOpacity onPress={()=> sair()}>
-        <Text style={styles.textoRetangulo}>SAIR</Text>
-        </TouchableOpacity>  
-      </View>
-      <View style={styles.retanguloFacebook}>
-        <Text style={styles.textoFacebook}>ENTRAR COM FACEBOOK</Text>
-      </View>
-      <View style={styles.retanguloGoogle}>
-        <Text style={styles.textoGoogle}>ENTRAR COM GOOGLE</Text>
-      </View>
-      <StatusBar style="auto" />
-      </KeyboardAvoidingView>  
+
+        <TouchableOpacity style={styles.botaoGoogle}>
+          <Entypo name="google-" size={16} style={styles.iconGoogle} />
+          <Text style={styles.textoBotaoGoogle}>ENTRAR COM GOOGLE</Text>
+        </TouchableOpacity>
+
+        <StatusBar style="auto" />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -123,42 +118,46 @@ const styles = StyleSheet.create({
     width: 360,
     height: 56,
     backgroundColor: '#cfe9e5',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  textoLogin: {
-    fontFamily: 'Arial',
+    textoLogin: {
+    fontFamily: 'Roboto_500Medium',
     fontSize: 20,
     color: '#434343',
-    textAlign: 'start',
-    paddingTop: 18,
-    marginLeft: 65,
+    position: 'absolute',
+    left: 36,
+    top: 18,
+    marginLeft: 37,
   },
-
-  textoContainer: {
+  iconMenu: {
+    marginLeft: 16,
+    marginBottom: 16,
+    marginTop: 16,
+    color: '#434343',
+  },
+  textInputContainer: {
+    width: 360,
+    marginTop: 50,
+    paddingHorizontal: 5,
+  },
+  textInput: {
     marginTop: 20,
-    fontFamily: 'Arial',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 14,
     color: '#bdbdbd',
   },
-  retangulo3: {
-    marginTop: 8,
-    width: '100%',
-    height: 0.8,
-    backgroundColor: '#e6e7e8',
+  textInputFilled: {
+    color: '#434343',
   },
-  textoContainer2: {
-    marginTop: 20,
-    fontFamily: 'Arial',
-    fontSize: 14,
-    color: '#bdbdbd',
-  },
-  retangulo4: {
+  separatorLine: {
     marginTop: 8,
     width: 312,
     height: 0.8,
     backgroundColor: '#e6e7e8',
   },
-  retangulo5: {
-    marginTop: 10,
+  botaoEntrar: {
+    marginTop: 52,
     width: 232,
     height: 40,
     borderWidth: 2,
@@ -167,44 +166,52 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  textoRetangulo: {
-    fontFamily: 'Arial',
+  textoBotaoEntrar: {
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: '#434343',
   },
-  retanguloFacebook: {
-    marginTop: 56,
+  botaoFacebook: {
+    marginTop: 72,
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 232,
     height: 40,
     borderWidth: 2,
-    backgroundColor: '#194f7c',
     borderColor: '#194f7c',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#194f7c',
+    fontFamily: 'Roboto_400Regular',
+    flexDirection: 'row',
   },
-  textoFacebook: {
-    fontFamily: 'Arial',
+  textoBotaoFacebook: {
+    color: '#f7f7f7',
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
+  },
+  iconFacebook: {
+    marginRight: 8,
     color: '#f7f7f7',
   },
-  retanguloGoogle: {
-    marginTop: 8,
-    width: 232,
-    height: 40,
-    borderWidth: 2,
-    backgroundColor: '#f15f5c',
-    borderColor: '#f15f5c',
-    justifyContent: 'center',
-    alignItems: 'center',
+  botaoGoogle: {
+  marginTop: 8,
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 232,
+  height: 40,
+  borderWidth: 2,
+  borderColor: '#f15f5c',
+  backgroundColor: '#f15f5c',
+  fontFamily: 'Roboto_400Regular',
+  flexDirection: 'row',
   },
-  textoGoogle: {
-    fontFamily: 'Arial',
-    fontSize: 12,
-    color: '#f7f7f7',
+  textoBotaoGoogle: {
+  color: '#f7f7f7',
+  fontFamily: 'Roboto_400Regular',
+  fontSize: 12,
   },
-
+  iconGoogle: {
+  marginRight: 8,
+  color: '#f7f7f7',
+  },
 });
-
-
-
-
+   
