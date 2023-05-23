@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../service/firebase';
 
 const Checkbox = ({ label, selected, onPress }) => {
   return (
@@ -34,11 +36,37 @@ const Checkbox2 = ({ label, selected, onPress }) => {
 export default function CadastrarPet() {
 
   const [especie, setEspecie] = useState('');
+  const [progresso, setProgresso] = useState(0);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const handleEspecieSelection = (selectedEspecie) => {
     setEspecie(selectedEspecie === especie ? '' : selectedEspecie);
   };
 
+  const handleUpload = async (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+
+    if (!file) return;
+    const storageRef = ref(storage, `images/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgresso(progress);
+      },
+      (error) => {
+        console.log('deu ruim', error);
+      },
+      async () => {
+        console.log('deu bom');
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        setImageUrl(downloadURL);
+      }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,15 +117,31 @@ export default function CadastrarPet() {
         <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
       </View>
 
-      <TouchableOpacity style={styles.containerFoto} onPress={() => {}}>
-        <View style={styles.retanguloFoto}>
-          <View style={styles.iconCamera}>
-              <Feather name="plus-circle" size={24} color = '#757575'/>
+      <TouchableOpacity style={styles.containerFoto}>
+        {imageUrl ? (
+            <Image source={{ uri: imageUrl }} style={styles.imagemUpload} resizeMode="contain" />
+          ) : (
+          <label htmlFor="fileInput">
+            <View style={styles.retanguloFoto}>
+              <View style={styles.iconCamera}>
+                <Feather name="plus-circle" size={24} color="#757575" />
+              </View>
+              <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
             </View>
-          <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
-        </View>
+          </label>
+        )}
+        <input
+          type="file"
+          id="fileInput"
+          style={{ display: "none" }}
+          onChange={handleUpload}
+        />
       </TouchableOpacity>
 
+       {/* Barra de progresso */}
+      <View style={styles.progressBar}>
+        <View style={{ flex: 1, width: `${progresso}%`, height: 4, backgroundColor: "#ffd358" }} />
+      </View>
 
       <View style={styles.Especie}>
         <Text style={styles.textoEspecie}>ESPÉCIE</Text>
@@ -537,6 +581,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto_400Regular',
     fontSize: 12,
     color: '#434343',
-  }
+  },
+  progressBar: {
+    width: "100%",
+    height: 4,
+    backgroundColor: "#f1f2f2",
+    marginTop: 8,
+  },
+  imagemUpload: {
+    width: 200,
+    height: 200,
+    marginBottom: 16,
+  },
 
 });
