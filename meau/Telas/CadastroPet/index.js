@@ -39,12 +39,82 @@ const Checkbox2 = ({ label, selected, onPress }) => {
 export default function CadastrarPet() {
 
   const [especie, setEspecie] = useState('');
+  const [sexo, setSexo] = useState('');
+  const [idade, setIdade] = useState('');
+  const [porte, setPorte] = useState('');
+  const [temperamentos, setTemperamentos] = useState([]);
+  const [saude, setSaude] = useState([]);
+
+  const [exigenciasAdocao, setExigenciasAdocao] = useState([]);
+  const [acompanhamentoPosAdocao, setAcompanhamentoPosAdocao] = useState(false);
+  const [opcaoSelecionada, setOpcaoSelecionada] = useState('');
+
+
+
   const [progresso, setProgresso] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+
+
 
   const handleEspecieSelection = (selectedEspecie) => {
     setEspecie(selectedEspecie === especie ? '' : selectedEspecie);
   };
+  const handleSexoSelection = (selectedSexo) => {
+    setSexo(selectedSexo === sexo ? '' : selectedSexo);
+  };
+  const handleIdadeSelection = (selectedIdade) => {
+    setIdade(selectedIdade === idade ? '' : selectedIdade);
+  };
+  const handlePorteSelection = (selectedPorte) => {
+    setPorte(selectedPorte === porte ? '' : selectedPorte);
+  };
+
+  const handleTemperamentoSelection = (selectedTemperamento) => {
+    if (temperamentos.includes(selectedTemperamento)) {
+      setTemperamentos(temperamentos.filter((temperamento) => temperamento !== selectedTemperamento));
+    } else {
+      setTemperamentos([...temperamentos, selectedTemperamento]);
+    }
+  };
+
+  const handleSaudeSelection = (selectedSaude) => {
+    if (saude.includes(selectedSaude)) {
+      setSaude(saude.filter((opcao) => opcao !== selectedSaude));
+    } else {
+      setSaude([...saude, selectedSaude]);
+    }
+  };
+
+  const handleExigenciaAdocaoSelection = (exigencia) => {
+    if (exigenciasAdocao.includes(exigencia)) {
+      setExigenciasAdocao(exigenciasAdocao.filter((opcao) => opcao !== exigencia));
+    } else {
+      setExigenciasAdocao([...exigenciasAdocao, exigencia]);
+    }
+  };
+
+  const handleAcompanhamentoPosAdocaoSelection = () => {
+    setAcompanhamentoPosAdocao(!acompanhamentoPosAdocao);
+    setOpcaoSelecionada('');
+  };
+
+  const handleOpcaoSelecionada = (opcao) => {
+    if (acompanhamentoPosAdocao) {
+      setOpcaoSelecionada(opcao);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleUpload = async (event) => {
     event.preventDefault();
@@ -187,8 +257,8 @@ export default function CadastrarPet() {
         </View>
         
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Macho" selected={especie === 'Macho'} onPress={() => handleEspecieSelection('Macho')} />
-          <Checkbox label="Fêmea" selected={especie === 'Fêmea'} onPress={() => handleEspecieSelection('Fêmea')} />
+          <Checkbox label="Macho" selected={sexo === 'Macho'} onPress={() => handleSexoSelection('Macho')} />
+          <Checkbox label="Fêmea" selected={sexo === 'Fêmea'} onPress={() => handleSexoSelection('Fêmea')} />
         </View>
 
         <View style={styles.Porte}>
@@ -196,9 +266,9 @@ export default function CadastrarPet() {
         </View>
 
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Pequeno" selected={especie === 'Pequeno'} onPress={() => handleEspecieSelection('Pequeno')} />
-          <Checkbox label="Médio" selected={especie === 'Médio'} onPress={() => handleEspecieSelection('Médio')} />
-          <Checkbox label="Grande" selected={especie === 'Grande'} onPress={() => handleEspecieSelection('Grande')} />
+          <Checkbox label="Pequeno" selected={porte === 'Pequeno'} onPress={() => handlePorteSelection('Pequeno')} />
+          <Checkbox label="Médio" selected={porte === 'Médio'} onPress={() => handlePorteSelection('Médio')} />
+          <Checkbox label="Grande" selected={porte === 'Grande'} onPress={() => handlePorteSelection('Grande')} />
         </View>
 
         <View style={styles.Idade}>
@@ -206,9 +276,9 @@ export default function CadastrarPet() {
         </View>
 
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Filhote" selected={especie === 'Filhote'} onPress={() => handleEspecieSelection('Filhote')} />
-          <Checkbox label="Adulto" selected={especie === 'Adulto'} onPress={() => handleEspecieSelection('Adulto')} />
-          <Checkbox label="Idoso" selected={especie === 'Idoso'} onPress={() => handleEspecieSelection('Idoso')} />
+          <Checkbox label="Filhote" selected={idade === 'Filhote'} onPress={() => handleIdadeSelection('Filhote')} />
+          <Checkbox label="Adulto" selected={idade === 'Adulto'} onPress={() => handleIdadeSelection('Adulto')} />
+          <Checkbox label="Idoso" selected={idade === 'Idoso'} onPress={() => handleIdadeSelection('Idoso')} />
         </View>
 
         <View style={styles.Temperamento}>
@@ -217,15 +287,39 @@ export default function CadastrarPet() {
 
         
         <View style={styles.checkboxRow}>
-          <Checkbox2 label="Brincalhão" selected={especie === 'Brincalhão'} onPress={() => handleEspecieSelection('Brincalhão')} />
-          <Checkbox2 label="Tímido" selected={especie === 'Tímido'} onPress={() => handleEspecieSelection('Tímido')} />
-          <Checkbox2 label="Calmo" selected={especie === 'Calmo'} onPress={() => handleEspecieSelection('Calmo')} />
+          <Checkbox2
+            label="Brincalhão"
+            selected={temperamentos.includes('Brincalhão')}
+            onPress={() => handleTemperamentoSelection('Brincalhão')}
+          />
+          <Checkbox2
+            label="Tímido"
+            selected={temperamentos.includes('Tímido')}
+            onPress={() => handleTemperamentoSelection('Tímido')}
+          />
+          <Checkbox2
+            label="Calmo"
+            selected={temperamentos.includes('Calmo')}
+            onPress={() => handleTemperamentoSelection('Calmo')}
+          />
         </View>
 
         <View style={styles.checkboxRow}>
-          <Checkbox2 label="Guarda" selected={especie === 'Guarda'} onPress={() => handleEspecieSelection('Guarda')} />
-          <Checkbox2 label="Amoroso" selected={especie === 'Amoroso'} onPress={() => handleEspecieSelection('Amoroso')} />
-          <Checkbox2 label="Preguiçoso" selected={especie === 'Preguiçoso'} onPress={() => handleEspecieSelection('Preguiçoso')} />
+          <Checkbox2
+            label="Guarda"
+            selected={temperamentos.includes('Guarda')}
+            onPress={() => handleTemperamentoSelection('Guarda')}
+          />
+          <Checkbox2
+            label="Amoroso"
+            selected={temperamentos.includes('Amoroso')}
+            onPress={() => handleTemperamentoSelection('Amoroso')}
+          />
+          <Checkbox2
+            label="Preguiçoso"
+            selected={temperamentos.includes('Preguiçoso')}
+            onPress={() => handleTemperamentoSelection('Preguiçoso')}
+          />
         </View>
         
 
@@ -235,12 +329,28 @@ export default function CadastrarPet() {
 
         
         <View style={styles.checkboxRow}>
-          <Checkbox2 label="Vacinado" selected={especie === 'Vacinado'} onPress={() => handleEspecieSelection('Vacinado')} />
-          <Checkbox2 label="Vermifugado" selected={especie === 'Vermifugado'} onPress={() => handleEspecieSelection('Vermifugado')} />
+          <Checkbox2
+            label="Vacinado"
+            selected={saude.includes('Vacinado')}
+            onPress={() => handleSaudeSelection('Vacinado')}
+          />
+          <Checkbox2
+            label="Vermifugado"
+            selected={saude.includes('Vermifugado')}
+            onPress={() => handleSaudeSelection('Vermifugado')}
+          />
         </View>
         <View style={styles.checkboxRow}>
-          <Checkbox2 label="Castrado" selected={especie === 'Castrado'} onPress={() => handleEspecieSelection('Castrado')} />
-          <Checkbox2 label="Doente" selected={especie === 'Doente'} onPress={() => handleEspecieSelection('Doente')} />
+          <Checkbox2
+            label="Castrado"
+            selected={saude.includes('Castrado')}
+            onPress={() => handleSaudeSelection('Castrado')}
+          />
+          <Checkbox2
+            label="Doente"
+            selected={saude.includes('Doente')}
+            onPress={() => handleSaudeSelection('Doente')}
+          />
         </View>
     
         <View style={styles.inputDoencas}>
@@ -258,27 +368,78 @@ export default function CadastrarPet() {
         </View>
 
         <View style={styles.checkboxRow}>
-          <Checkbox2 label="Termo de adoção" selected={especie === 'Termo de adoção'} onPress={() => handleEspecieSelection('Termo de adoção')} />
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox2 label="Fotos da casa" selected={especie === 'Fotos da casa'} onPress={() => handleEspecieSelection('Fotos da casa')} />
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox2 label="Visita prévia ao animal" selected={especie === 'Visita prévia ao animal'} onPress={() => handleEspecieSelection('Visita prévia ao animal')} />
-        </View>
-        <View style={styles.checkboxRow}>
-          <Checkbox2 label="Acompanhamento pós adoção" selected={especie === 'Acompanhamento pós adoção'} onPress={() => handleEspecieSelection('Acompanhamento pós adoção')} />
-        </View>
+        <Checkbox2
+          label="Termo de adoção"
+          selected={exigenciasAdocao.includes('Termo de adoção')}
+          onPress={() => handleExigenciaAdocaoSelection('Termo de adoção')}
+        />
+        <Checkbox2
+          label="Fotos da casa"
+          selected={exigenciasAdocao.includes('Fotos da casa')}
+          onPress={() => handleExigenciaAdocaoSelection('Fotos da casa')}
+        />
+      </View>
 
-        <View style={styles.checkboxRow2}>
-          <Checkbox2 label="1 mês" selected={especie === '1 mês'} onPress={() => handleEspecieSelection('1 mês')} />
-        </View>
-        <View style={styles.checkboxRow2}>
-          <Checkbox2 label="3 meses" selected={especie === '3 meses'} onPress={() => handleEspecieSelection('3 meses')} />
-        </View>
-        <View style={styles.checkboxRow2}>
-          <Checkbox2 label="6 meses" selected={especie === '6 meses'} onPress={() => handleEspecieSelection('6 meses')} />
-        </View>
+      <View style={styles.checkboxRow}>
+        <Checkbox2
+          label="Visita prévia ao animal"
+          selected={exigenciasAdocao.includes('Visita prévia ao animal')}
+          onPress={() => handleExigenciaAdocaoSelection('Visita prévia ao animal')}
+        />
+        <Checkbox2
+          label="Acompanhamento pós adoção"
+          selected={acompanhamentoPosAdocao}
+          onPress={handleAcompanhamentoPosAdocaoSelection}
+        />
+      </View>
+
+      <View style={styles.checkboxRow}>
+        <Checkbox2
+          label="1 mês"
+          selected={opcaoSelecionada === '1 mês'}
+          onPress={() => handleOpcaoSelecionada('1 mês')}
+          disabled={!acompanhamentoPosAdocao}
+        />
+        <Checkbox2
+          label="3 meses"
+          selected={opcaoSelecionada === '3 meses'}
+          onPress={() => handleOpcaoSelecionada('3 meses')}
+          disabled={!acompanhamentoPosAdocao}
+        />
+        <Checkbox2
+          label="6 meses"
+          selected={opcaoSelecionada === '6 meses'}
+          onPress={() => handleOpcaoSelecionada('6 meses')}
+          disabled={!acompanhamentoPosAdocao}
+        />
+      </View>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <View style={styles.Sobre}>
           <Text style={styles.textoSobre}>SOBRE O ANIMAL</Text>
