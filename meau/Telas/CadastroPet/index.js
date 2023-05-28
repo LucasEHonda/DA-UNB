@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image, ScrollView  } from 'react-native';
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../service/firebase';
@@ -69,208 +69,210 @@ export default function CadastrarPet() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      
-      <View style={styles.retangulo1} />
-      <View style={styles.retanguloCadastroAnimal}>
-        <TouchableOpacity onPress={() => { }}>
-            <View style={styles.iconArrow}>
-              <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
-            </View>
-          </TouchableOpacity>
-        <Text style={styles.textoCadastroAnimal}>Cadastro do Animal</Text>
-      </View>
-
-      <View style={styles.Mensagem}>
-        <Text style={styles.textoMensagem}>Tenho interesse em cadastrar o animal para:</Text>
-      </View>
-
-      <View style={styles.botoesContainer}>
-        <TouchableOpacity style={styles.BotaoADOCAO}>
-          <Text style={styles.textoBotaoADOCAO}>ADOÇÃO</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.BotaoAJUDA}>
-          <Text style={styles.textoBotaoAJUDA}>AJUDA</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.MensagemADOCAO}>
-        <Text style={styles.textoMensagemADOCAO}>Adoção</Text>
-      </View>
-
-      <View style={styles.NomeAnimal}>
-        <Text style={styles.textoNomeAnimal}>NOME ANIMAL</Text>
-      </View>
-
-      <View style={styles.inputNomeAnimal}>
-        <TextInput
-          style={styles.textoinputNomeAnimal}
-          placeholder="Nome do animal"
-          placeholderTextColor="#bdbdbd"
-        />
-        </View>
-
-        <View style={styles.divisoria} />
-
-      <View style={styles.FotosAnimal}>
-        <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
-      </View>
-
-      <TouchableOpacity style={styles.containerFoto}>
-        {imageUrl ? (
-            <Image source={{ uri: imageUrl }} style={styles.imagemUpload} resizeMode="contain" />
-          ) : (
-          <label htmlFor="fileInput">
-            <View style={styles.retanguloFoto}>
-              <View style={styles.iconCamera}>
-                <Feather name="plus-circle" size={24} color="#757575" />
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        
+        <View style={styles.retangulo1} />
+        <View style={styles.retanguloCadastroAnimal}>
+          <TouchableOpacity onPress={() => { }}>
+              <View style={styles.iconArrow}>
+                <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
               </View>
-              <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
-            </View>
-          </label>
-        )}
-        <input
-          type="file"
-          id="fileInput"
-          style={{ display: "none" }}
-          onChange={handleUpload}
-        />
-      </TouchableOpacity>
-
-       {/* Barra de progresso */}
-      <View style={styles.progressBar}>
-        <View style={{ flex: 1, width: `${progresso}%`, height: 4, backgroundColor: "#ffd358" }} />
-      </View>
-
-      <View style={styles.Especie}>
-        <Text style={styles.textoEspecie}>ESPÉCIE</Text>
-      </View>
-
-
-      <View style={styles.checkboxWrapper}>
-        <Checkbox label="Cachorro" selected={especie === 'Cachorro'} onPress={() => handleEspecieSelection('Cachorro')} />
-        <Checkbox label="Gato" selected={especie === 'Gato'} onPress={() => handleEspecieSelection('Gato')} />
-      </View>
-      
-
-      <View style={styles.Sexo}>
-        <Text style={styles.textoSexo}>SEXO</Text>
-      </View>
-      
-      <View style={styles.checkboxWrapper}>
-        <Checkbox label="Macho" selected={especie === 'Macho'} onPress={() => handleEspecieSelection('Macho')} />
-        <Checkbox label="Fêmea" selected={especie === 'Fêmea'} onPress={() => handleEspecieSelection('Fêmea')} />
-      </View>
-
-      <View style={styles.Porte}>
-        <Text style={styles.textoPorte}>PORTE</Text>
-      </View>
-
-      <View style={styles.checkboxWrapper}>
-        <Checkbox label="Pequeno" selected={especie === 'Pequeno'} onPress={() => handleEspecieSelection('Pequeno')} />
-        <Checkbox label="Médio" selected={especie === 'Médio'} onPress={() => handleEspecieSelection('Médio')} />
-        <Checkbox label="Grande" selected={especie === 'Grande'} onPress={() => handleEspecieSelection('Grande')} />
-      </View>
-
-      <View style={styles.Idade}>
-        <Text style={styles.textoIdade}>IDADE</Text>
-      </View>
-
-      <View style={styles.checkboxWrapper}>
-        <Checkbox label="Filhote" selected={especie === 'Filhote'} onPress={() => handleEspecieSelection('Filhote')} />
-        <Checkbox label="Adulto" selected={especie === 'Adulto'} onPress={() => handleEspecieSelection('Adulto')} />
-        <Checkbox label="Idoso" selected={especie === 'Idoso'} onPress={() => handleEspecieSelection('Idoso')} />
-      </View>
-
-      <View style={styles.Temperamento}>
-        <Text style={styles.textoTemperamento}>TEMPERAMENTO</Text>
-      </View>
-
-      
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Brincalhão" selected={especie === 'Brincalhão'} onPress={() => handleEspecieSelection('Brincalhão')} />
-        <Checkbox2 label="Tímido" selected={especie === 'Tímido'} onPress={() => handleEspecieSelection('Tímido')} />
-        <Checkbox2 label="Calmo" selected={especie === 'Calmo'} onPress={() => handleEspecieSelection('Calmo')} />
-      </View>
-
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Guarda" selected={especie === 'Guarda'} onPress={() => handleEspecieSelection('Guarda')} />
-        <Checkbox2 label="Amoroso" selected={especie === 'Amoroso'} onPress={() => handleEspecieSelection('Amoroso')} />
-        <Checkbox2 label="Preguiçoso" selected={especie === 'Preguiçoso'} onPress={() => handleEspecieSelection('Preguiçoso')} />
-      </View>
-      
-
-      <View style={styles.Saude}>
-        <Text style={styles.textoSaude}>SAÚDE</Text>
-      </View>
-
-      
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Vacinado" selected={especie === 'Vacinado'} onPress={() => handleEspecieSelection('Vacinado')} />
-        <Checkbox2 label="Vermifugado" selected={especie === 'Vermifugado'} onPress={() => handleEspecieSelection('Vermifugado')} />
-      </View>
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Castrado" selected={especie === 'Castrado'} onPress={() => handleEspecieSelection('Castrado')} />
-        <Checkbox2 label="Doente" selected={especie === 'Doente'} onPress={() => handleEspecieSelection('Doente')} />
-      </View>
-  
-      <View style={styles.inputDoencas}>
-        <TextInput
-          style={styles.textoinputDoencas}
-          placeholder="Doenças do animal"
-          placeholderTextColor="#bdbdbd"
-        />
+            </TouchableOpacity>
+          <Text style={styles.textoCadastroAnimal}>Cadastro do Animal</Text>
         </View>
 
-        <View style={styles.divisoria} />
-
-      <View style={styles.Exigencias}>
-        <Text style={styles.textoExigencias}>EXIGÊNCIAS PARA ADOÇÃO</Text>
-      </View>
-
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Termo de adoção" selected={especie === 'Termo de adoção'} onPress={() => handleEspecieSelection('Termo de adoção')} />
-      </View>
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Fotos da casa" selected={especie === 'Fotos da casa'} onPress={() => handleEspecieSelection('Fotos da casa')} />
-      </View>
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Visita prévia ao animal" selected={especie === 'Visita prévia ao animal'} onPress={() => handleEspecieSelection('Visita prévia ao animal')} />
-      </View>
-      <View style={styles.checkboxRow}>
-        <Checkbox2 label="Acompanhamento pós adoção" selected={especie === 'Acompanhamento pós adoção'} onPress={() => handleEspecieSelection('Acompanhamento pós adoção')} />
-      </View>
-
-      <View style={styles.checkboxRow2}>
-        <Checkbox2 label="1 mês" selected={especie === '1 mês'} onPress={() => handleEspecieSelection('1 mês')} />
-      </View>
-      <View style={styles.checkboxRow2}>
-        <Checkbox2 label="3 meses" selected={especie === '3 meses'} onPress={() => handleEspecieSelection('3 meses')} />
-      </View>
-      <View style={styles.checkboxRow2}>
-        <Checkbox2 label="6 meses" selected={especie === '6 meses'} onPress={() => handleEspecieSelection('6 meses')} />
-      </View>
-
-      <View style={styles.Sobre}>
-        <Text style={styles.textoSobre}>SOBRE O ANIMAL</Text>
-      </View>
-      
-      <View style={styles.inputSobre}>
-        <TextInput
-          style={styles.textoInputSobre}
-          placeholder="Compartilhe a história do animal"
-          placeholderTextColor="#bdbdbd"
-        />
+        <View style={styles.Mensagem}>
+          <Text style={styles.textoMensagem}>Tenho interesse em cadastrar o animal para:</Text>
         </View>
-        <View style={styles.divisoria} />
 
-        <TouchableOpacity style={styles.BotaoFINALIZAR}>
-          <Text style={styles.textoBotaoFINALIZAR}>COLOCAR PARA ADOÇÃO</Text>
+        <View style={styles.botoesContainer}>
+          <TouchableOpacity style={styles.BotaoADOCAO}>
+            <Text style={styles.textoBotaoADOCAO}>ADOÇÃO</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.BotaoAJUDA}>
+            <Text style={styles.textoBotaoAJUDA}>AJUDA</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.MensagemADOCAO}>
+          <Text style={styles.textoMensagemADOCAO}>Adoção</Text>
+        </View>
+
+        <View style={styles.NomeAnimal}>
+          <Text style={styles.textoNomeAnimal}>NOME ANIMAL</Text>
+        </View>
+
+        <View style={styles.inputNomeAnimal}>
+          <TextInput
+            style={styles.textoinputNomeAnimal}
+            placeholder="Nome do animal"
+            placeholderTextColor="#bdbdbd"
+          />
+          </View>
+
+          <View style={styles.divisoria} />
+
+        <View style={styles.FotosAnimal}>
+          <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
+        </View>
+
+        <TouchableOpacity style={styles.containerFoto}>
+          {imageUrl ? (
+              <Image source={{ uri: imageUrl }} style={styles.imagemUpload} resizeMode="contain" />
+            ) : (
+            <label htmlFor="fileInput">
+              <View style={styles.retanguloFoto}>
+                <View style={styles.iconCamera}>
+                  <Feather name="plus-circle" size={24} color="#757575" />
+                </View>
+                <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
+              </View>
+            </label>
+          )}
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={handleUpload}
+          />
         </TouchableOpacity>
 
-      <StatusBar style="auto" />
-    </SafeAreaView>
+        {/* Barra de progresso */}
+        <View style={styles.progressBar}>
+          <View style={{ flex: 1, width: `${progresso}%`, height: 4, backgroundColor: "#ffd358" }} />
+        </View>
+
+        <View style={styles.Especie}>
+          <Text style={styles.textoEspecie}>ESPÉCIE</Text>
+        </View>
+
+
+        <View style={styles.checkboxWrapper}>
+          <Checkbox label="Cachorro" selected={especie === 'Cachorro'} onPress={() => handleEspecieSelection('Cachorro')} />
+          <Checkbox label="Gato" selected={especie === 'Gato'} onPress={() => handleEspecieSelection('Gato')} />
+        </View>
+        
+
+        <View style={styles.Sexo}>
+          <Text style={styles.textoSexo}>SEXO</Text>
+        </View>
+        
+        <View style={styles.checkboxWrapper}>
+          <Checkbox label="Macho" selected={especie === 'Macho'} onPress={() => handleEspecieSelection('Macho')} />
+          <Checkbox label="Fêmea" selected={especie === 'Fêmea'} onPress={() => handleEspecieSelection('Fêmea')} />
+        </View>
+
+        <View style={styles.Porte}>
+          <Text style={styles.textoPorte}>PORTE</Text>
+        </View>
+
+        <View style={styles.checkboxWrapper}>
+          <Checkbox label="Pequeno" selected={especie === 'Pequeno'} onPress={() => handleEspecieSelection('Pequeno')} />
+          <Checkbox label="Médio" selected={especie === 'Médio'} onPress={() => handleEspecieSelection('Médio')} />
+          <Checkbox label="Grande" selected={especie === 'Grande'} onPress={() => handleEspecieSelection('Grande')} />
+        </View>
+
+        <View style={styles.Idade}>
+          <Text style={styles.textoIdade}>IDADE</Text>
+        </View>
+
+        <View style={styles.checkboxWrapper}>
+          <Checkbox label="Filhote" selected={especie === 'Filhote'} onPress={() => handleEspecieSelection('Filhote')} />
+          <Checkbox label="Adulto" selected={especie === 'Adulto'} onPress={() => handleEspecieSelection('Adulto')} />
+          <Checkbox label="Idoso" selected={especie === 'Idoso'} onPress={() => handleEspecieSelection('Idoso')} />
+        </View>
+
+        <View style={styles.Temperamento}>
+          <Text style={styles.textoTemperamento}>TEMPERAMENTO</Text>
+        </View>
+
+        
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Brincalhão" selected={especie === 'Brincalhão'} onPress={() => handleEspecieSelection('Brincalhão')} />
+          <Checkbox2 label="Tímido" selected={especie === 'Tímido'} onPress={() => handleEspecieSelection('Tímido')} />
+          <Checkbox2 label="Calmo" selected={especie === 'Calmo'} onPress={() => handleEspecieSelection('Calmo')} />
+        </View>
+
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Guarda" selected={especie === 'Guarda'} onPress={() => handleEspecieSelection('Guarda')} />
+          <Checkbox2 label="Amoroso" selected={especie === 'Amoroso'} onPress={() => handleEspecieSelection('Amoroso')} />
+          <Checkbox2 label="Preguiçoso" selected={especie === 'Preguiçoso'} onPress={() => handleEspecieSelection('Preguiçoso')} />
+        </View>
+        
+
+        <View style={styles.Saude}>
+          <Text style={styles.textoSaude}>SAÚDE</Text>
+        </View>
+
+        
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Vacinado" selected={especie === 'Vacinado'} onPress={() => handleEspecieSelection('Vacinado')} />
+          <Checkbox2 label="Vermifugado" selected={especie === 'Vermifugado'} onPress={() => handleEspecieSelection('Vermifugado')} />
+        </View>
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Castrado" selected={especie === 'Castrado'} onPress={() => handleEspecieSelection('Castrado')} />
+          <Checkbox2 label="Doente" selected={especie === 'Doente'} onPress={() => handleEspecieSelection('Doente')} />
+        </View>
+    
+        <View style={styles.inputDoencas}>
+          <TextInput
+            style={styles.textoinputDoencas}
+            placeholder="Doenças do animal"
+            placeholderTextColor="#bdbdbd"
+          />
+          </View>
+
+          <View style={styles.divisoria} />
+
+        <View style={styles.Exigencias}>
+          <Text style={styles.textoExigencias}>EXIGÊNCIAS PARA ADOÇÃO</Text>
+        </View>
+
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Termo de adoção" selected={especie === 'Termo de adoção'} onPress={() => handleEspecieSelection('Termo de adoção')} />
+        </View>
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Fotos da casa" selected={especie === 'Fotos da casa'} onPress={() => handleEspecieSelection('Fotos da casa')} />
+        </View>
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Visita prévia ao animal" selected={especie === 'Visita prévia ao animal'} onPress={() => handleEspecieSelection('Visita prévia ao animal')} />
+        </View>
+        <View style={styles.checkboxRow}>
+          <Checkbox2 label="Acompanhamento pós adoção" selected={especie === 'Acompanhamento pós adoção'} onPress={() => handleEspecieSelection('Acompanhamento pós adoção')} />
+        </View>
+
+        <View style={styles.checkboxRow2}>
+          <Checkbox2 label="1 mês" selected={especie === '1 mês'} onPress={() => handleEspecieSelection('1 mês')} />
+        </View>
+        <View style={styles.checkboxRow2}>
+          <Checkbox2 label="3 meses" selected={especie === '3 meses'} onPress={() => handleEspecieSelection('3 meses')} />
+        </View>
+        <View style={styles.checkboxRow2}>
+          <Checkbox2 label="6 meses" selected={especie === '6 meses'} onPress={() => handleEspecieSelection('6 meses')} />
+        </View>
+
+        <View style={styles.Sobre}>
+          <Text style={styles.textoSobre}>SOBRE O ANIMAL</Text>
+        </View>
+        
+        <View style={styles.inputSobre}>
+          <TextInput
+            style={styles.textoInputSobre}
+            placeholder="Compartilhe a história do animal"
+            placeholderTextColor="#bdbdbd"
+          />
+          </View>
+          <View style={styles.divisoria} />
+
+          <TouchableOpacity style={styles.BotaoFINALIZAR}>
+            <Text style={styles.textoBotaoFINALIZAR}>COLOCAR PARA ADOÇÃO</Text>
+          </TouchableOpacity>
+
+        <StatusBar style="auto" />
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
