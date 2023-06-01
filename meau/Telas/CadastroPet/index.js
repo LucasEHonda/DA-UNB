@@ -4,6 +4,9 @@ import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Imag
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../service/firebase';
+import { db } from '../../service/firebase';
+import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Checkbox = ({ label, selected, onPress }) => {
   return (
@@ -67,7 +70,31 @@ export default function CadastrarPet() {
       }
     );
   };
-
+  const getUserFromStorage = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      if (user !== null) {
+        // O usuário foi encontrado na storage
+        return JSON.parse(user);
+      } else {
+        // A chave 'user' não existe na storage
+        return null;
+      }
+    } catch (error) {
+      // Ocorreu um erro ao acessar a storage
+      console.log('Erro ao recuperar o usuário da storage:', error);
+      return null;
+    }
+  };
+  const petCollectionRef = collection(db, "pets")
+  async function createPet(form){
+    // add o user id no form e passar ele pro addDoc
+    const pet = {}
+    const user = await getUserFromStorage()
+    pet["owner"] = user.uid
+    const pet_ = await addDoc(petCollectionRef, pet)
+    console.log("deu bom!")
+  }
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -266,7 +293,9 @@ export default function CadastrarPet() {
           </View>
           <View style={styles.divisoria} />
 
-          <TouchableOpacity style={styles.BotaoFINALIZAR}>
+          <TouchableOpacity onPress={(form) => {
+    createPet(form);
+  }}  style={styles.BotaoFINALIZAR}>
             <Text style={styles.textoBotaoFINALIZAR}>COLOCAR PARA ADOÇÃO</Text>
           </TouchableOpacity>
 
