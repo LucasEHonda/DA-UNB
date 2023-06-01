@@ -1,26 +1,25 @@
-import{createNativeStackNavigator} from '@react-navigation/native-stack';
+import{createDrawerNavigator} from '@react-navigation/drawer';
 import Principal from '../Telas/Principal';
 import Login from '../Telas/Login';
 import CadastrarPet from '../Telas/CadastroPet';
 import CadastrarPessoa from '../Telas/CadastroPessoal_Ops';
 import RegistrarUsuario from '../Telas/CadastroPessoal_Registro';
+import 'react-native-gesture-handler';
 
 
-
-const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 
 export default function Rotas(){
   
  return(
- <Stack.Navigator>
-    <Stack.Screen name="Desenvolvimento de Aplicativos" component={Principal}/>
-    <Stack.Screen  name="Login" component={Login}/>
-    <Stack.Screen  name="Cadastrar Pet" component={CadastrarPet}/>
-    <Stack.Screen  name="Cadastrar Pessoa" component={CadastrarPessoa}/>
-    <Stack.Screen  name="Registrar Usuario" component={RegistrarUsuario}/>
-
-
- </Stack.Navigator>
+  <Drawer.Navigator initialRouteName="Desenvolvimento de Aplicativos" >
+    <Drawer.Screen name="Desenvolvimento de Aplicativos" component={Principal} 
+    options={{headerShown:false}}/>
+    <Drawer.Screen  name="Login" component={Login}/>
+    <Drawer.Screen  name="Cadastrar Pet" component={CadastrarPet}/>
+    <Drawer.Screen  name="Cadastrar Pessoa" component={CadastrarPessoa}/>
+     <Drawer.Screen  name="Registrar Usuario" component={RegistrarUsuario}/>
+  </Drawer.Navigator> 
  )
 }
