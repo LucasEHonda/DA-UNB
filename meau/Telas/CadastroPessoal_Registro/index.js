@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
 import { Octicons, Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -94,147 +94,149 @@ export default function RegistrarUsuario() {
 
   
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-        <View style={styles.retangulo1} />
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+          <View style={styles.retangulo1} />
 
-        <View style={styles.retanguloCadastro}>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconMenu}>
-              <Octicons name="three-bars" size={24} />
+          <View style={styles.retanguloCadastro}>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.iconMenu}>
+                <Octicons name="three-bars" size={24} />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.textoCadastro}>Cadastro Pessoal </Text>
+          </View>
+
+          <View style={styles.containerDescricao}>
+          <Text style={styles.textoDescricao}>
+              As informações preenchidas serão divulgadas {"\n"}apenas para a pessoa
+              com a qual você realizar{"\n"} o processo de adoção e/ou apadrinhamento,
+            {"\n"}
+            {"\t"}após a formalização do processo.
+            </Text>
+          </View>
+
+          <View style={styles.containerInfos}>
+          <Text style={styles.informacoesPessoais}>INFORMAÇÕES PESSOAIS</Text>
+          </View>
+
+          <View style={styles.textInputContainer}>
+            <TextInput
+              style={[styles.textInput, nome !== '' && styles.textInputFilled]}
+              placeholder="Nome completo"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleNomeChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, idade !== '' && styles.textInputFilled]}
+              placeholder="Idade"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleIdadeChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, emaill !== '' && styles.textInputFilled]}
+              placeholder="E-mail"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleEmaillChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, estado !== '' && styles.textInputFilled]}
+              placeholder="Estado"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleEstadoChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, cidade !== '' && styles.textInputFilled]}
+              placeholder="Cidade"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleCidadeChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, endereco !== '' && styles.textInputFilled]}
+              placeholder="Endereço"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleEnderecoChange}
+            />
+            <View style={styles.separatorLine} />
+
+            <TextInput
+              style={[styles.textInput, telefone !== '' && styles.textInputFilled]}
+              placeholder="Telefone"
+              placeholderTextColor="#bdbdbd"
+              onChangeText={handleTelefoneChange}
+            />
+            <View style={styles.separatorLine} />
+          </View>
+
+          <View style={styles.containerInfosProfile}>
+          <Text style={styles.informacoesProfile}>INFORMAÇÕES DE PERFIL</Text>
+          </View>
+
+          <View style={styles.textInputContainer}>
+            <TextInput
+              style={[styles.textInput, email ? styles.textInputFilled : null]}
+              placeholder="Nome de usuário"
+              placeholderTextColor="#bdbdbd"
+              value={email}
+              onChangeText={handleEmailChange}
+            />
+            <View style={styles.separatorLine} />
+            <TextInput
+              style={[styles.textInput, password ? styles.textInputFilled : null]}
+              placeholder="Senha"
+              placeholderTextColor="#bdbdbd"
+              value={password}
+              onChangeText={handlePasswordChange}
+              secureTextEntry
+            />
+            <View style={styles.separatorLine} />
+            <TextInput
+              style={[styles.textInput, confirmationPassword ? styles.textInputFilled : null]}
+              placeholder="Confirmação de senha"
+              placeholderTextColor="#bdbdbd"
+              value={confirmationPassword}
+              onChangeText={handleconfirmationPasswordChange}
+              secureTextEntry
+            />
+            <View style={styles.separatorLine} />
+
+            <View style={styles.containerFotoProfile}>
+          <Text style={styles.textoFotoProfile}>FOTO DE PERFIL</Text>
+          </View>
+
+
+          <TouchableOpacity style={styles.containerFoto} onPress={() => {}}>
+            <View style={styles.retanguloFoto}>
+              <View style={styles.iconCamera}>
+                  <Feather name="plus-circle" size={24} color = '#757575'/>
+                </View>
+              <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
             </View>
           </TouchableOpacity>
-          <Text style={styles.textoCadastro}>Cadastro Pessoal </Text>
-        </View>
 
-        <View style={styles.containerDescricao}>
-        <Text style={styles.textoDescricao}>
-            As informações preenchidas serão divulgadas {"\n"}apenas para a pessoa
-            com a qual você realizar{"\n"} o processo de adoção e/ou apadrinhamento,
-          {"\n"}
-          {"\t"}após a formalização do processo.
-          </Text>
-        </View>
-
-        <View style={styles.containerInfos}>
-        <Text style={styles.informacoesPessoais}>INFORMAÇÕES PESSOAIS</Text>
-        </View>
-
-        <View style={styles.textInputContainer}>
-          <TextInput
-            style={[styles.textInput, nome !== '' && styles.textInputFilled]}
-            placeholder="Nome completo"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleNomeChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, idade !== '' && styles.textInputFilled]}
-            placeholder="Idade"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleIdadeChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, emaill !== '' && styles.textInputFilled]}
-            placeholder="E-mail"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleEmaillChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, estado !== '' && styles.textInputFilled]}
-            placeholder="Estado"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleEstadoChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, cidade !== '' && styles.textInputFilled]}
-            placeholder="Cidade"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleCidadeChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, endereco !== '' && styles.textInputFilled]}
-            placeholder="Endereço"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleEnderecoChange}
-          />
-          <View style={styles.separatorLine} />
-
-          <TextInput
-            style={[styles.textInput, telefone !== '' && styles.textInputFilled]}
-            placeholder="Telefone"
-            placeholderTextColor="#bdbdbd"
-            onChangeText={handleTelefoneChange}
-          />
-          <View style={styles.separatorLine} />
-        </View>
-
-        <View style={styles.containerInfosProfile}>
-        <Text style={styles.informacoesProfile}>INFORMAÇÕES DE PERFIL</Text>
-        </View>
-
-        <View style={styles.textInputContainer}>
-          <TextInput
-            style={[styles.textInput, email ? styles.textInputFilled : null]}
-            placeholder="Nome de usuário"
-            placeholderTextColor="#bdbdbd"
-            value={email}
-            onChangeText={handleEmailChange}
-          />
-          <View style={styles.separatorLine} />
-          <TextInput
-            style={[styles.textInput, password ? styles.textInputFilled : null]}
-            placeholder="Senha"
-            placeholderTextColor="#bdbdbd"
-            value={password}
-            onChangeText={handlePasswordChange}
-            secureTextEntry
-          />
-          <View style={styles.separatorLine} />
-          <TextInput
-            style={[styles.textInput, confirmationPassword ? styles.textInputFilled : null]}
-            placeholder="Confirmação de senha"
-            placeholderTextColor="#bdbdbd"
-            value={confirmationPassword}
-            onChangeText={handleconfirmationPasswordChange}
-            secureTextEntry
-          />
-          <View style={styles.separatorLine} />
-
-          <View style={styles.containerFotoProfile}>
-        <Text style={styles.textoFotoProfile}>FOTO DE PERFIL</Text>
-        </View>
-
-
-        <TouchableOpacity style={styles.containerFoto} onPress={() => {}}>
-          <View style={styles.retanguloFoto}>
-            <View style={styles.iconCamera}>
-                <Feather name="plus-circle" size={24} color = '#757575'/>
-              </View>
-            <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
-          </View>
+          <TouchableOpacity style={styles.BotaoCADASTRO}
+          onPress ={()=> criarUser () }>
+          <Text style={styles.textoBotaoCADASTRO}>FAZER CADASTRO</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.BotaoCADASTRO}
-        onPress ={()=> criarUser () }>
-        <Text style={styles.textoBotaoCADASTRO}>FAZER CADASTRO</Text>
-      </TouchableOpacity>
-
-        </View>
+          </View>
 
 
-        <StatusBar style="auto" />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          <StatusBar style="auto" />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
