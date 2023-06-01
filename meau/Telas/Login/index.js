@@ -1,45 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput,
-SafeAreaView, KeyboardAvoidingView,
-TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Platform } from 'react-native';
 import { Octicons, Ionicons, Entypo } from '@expo/vector-icons';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../service/firebase';
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {setloggedIn(true);
-    
-  } else { setloggedIn(false);
-    
-  }
-});
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  async function Logar ()  {
-    if(email === '' || password === ' ') {
-    alert('Preencha todos os campos')
-    return;
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedIn(true);
+        saveUser(user);
+      } else {
+        setLoggedIn(false);
+        clearUser();
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const saveUser = async (user) => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+    } catch (error) {
+      console.log('Erro ao salvar usuário:', error);
+    }
   };
-    await signInWithEmailAndPassword(auth, email, password).then(value=>{
-    console.log("Logado na conta")})
-    .catch(error =>(alert(error.messagem)));
+
+  const clearUser = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+    } catch (error) {
+      console.log('Erro ao remover usuário:', error);
+    }
   };
+
+  async function Logar() {
+    if (email === '' || password === '') {
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log('Usuário logado:', user);
+      saveUser(user);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   const handleEmailChange = (value) => {
     setEmail(value);
   };
+
   const handlePasswordChange = (value) => {
     setPassword(value);
   };
 
   async function sair() {
-    await signOut(auth).then(value => {console.log("Usuário deslogado")})
-    .catch(error => console.log(error));
+    try {
+      await signOut(auth);
+      console.log('Usuário deslogado');
+      clearUser();
+    } catch (error) {
+      console.log('Erro ao deslogar usuário:', error);
+    }
   }
 
   return (
