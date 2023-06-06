@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
-import { Octicons } from '@expo/vector-icons';
+import { Octicons, Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { db, storage } from '../../service/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -11,12 +11,10 @@ import { ref, getDownloadURL } from 'firebase/storage';
 export default function RegistrarUsuario() {
   const [pets, setPets] = useState([]);
 
-
-
   async function getPetsByUser() {
     const user = await userFromStorage();
     const querySnapshot = await getDocs(query(petCollectionRef, where("owner", "==", user.uid)));
-  
+
     const pets_ = [];
     for (const doc of querySnapshot.docs) {
       const pet = {
@@ -32,24 +30,24 @@ export default function RegistrarUsuario() {
   }
 
   async function getImageURL(pet) {
-    const user = await userFromStorage()
+    const user = await userFromStorage();
     const storageRef = ref(storage, `${user.uid}/${pet.name}_${pet.id}.png`);
-  
+
     try {
       const imageURL = await getDownloadURL(storageRef);
-      return imageURL
+      return imageURL;
     } catch (error) {
-      const storageRef = ref(storage, `${user.uid}/${pet.name}_${pet.id}.jpeg`);
-      const imageURL = await getDownloadURL(storageRef);
+      const storageRefJPEG = ref(storage, `${user.uid}/${pet.name}_${pet.id}.jpeg`);
+      const imageURLJPEG = await getDownloadURL(storageRefJPEG);
+      return imageURLJPEG;
     }
-  }  
+  }
 
-  const petCollectionRef = collection(db, "pets")
-  useEffect(()=>{
-    getPetsByUser()
-  }, [])
+  const petCollectionRef = collection(db, "pets");
+  useEffect(() => {
+    getPetsByUser();
+  }, []);
 
-  
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -63,9 +61,14 @@ export default function RegistrarUsuario() {
               </View>
             </TouchableOpacity>
             <Text style={styles.textoMenu}>Meus Pets</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.iconLupa}>
+              <Feather name="search" size={24} />
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.separatorLine} />
-          
+
           {pets.map((pet) => (
             <View key={pet.id}>
               <View style={styles.retanguloNomePet}>
@@ -76,12 +79,10 @@ export default function RegistrarUsuario() {
                 <Image source={{ uri: pet.imageUrl }} style={styles.petImage} />
               </View>
               <View style={styles.retanguloinformacoes}>
-                <Text style={styles.textoinformacoes}>Interessados</Text>
+                <Text style={styles.textoinformacoes}>INTERESSADOS</Text>
               </View>
             </View>
           ))}
-
-
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ScrollView>
@@ -134,6 +135,12 @@ const styles = StyleSheet.create({
 
   iconMenu: {
     marginLeft: 16,
+    marginBottom: 16,
+    marginTop: 16,
+    color: '#434343',
+  },
+  iconLupa: {
+    marginLeft: 274,
     marginBottom: 16,
     marginTop: 16,
     color: '#434343',
@@ -202,12 +209,8 @@ const styles = StyleSheet.create({
     height: 0.8,
     backgroundColor: '#e6e7e8',
   },
-  
-  
-  iconCamera: {
-    marginTop: 44,
-  },
-  
+
+
 
 });
    
