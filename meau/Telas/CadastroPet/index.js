@@ -128,6 +128,10 @@ export default function CadastrarPet() {
   };
   
   const handleUpload = async (petId) => {
+    if (!nomeAnimal){
+      alert("Preencha o campo 'nome'")
+      return
+    }
     const user = await userFromStorage();
     const fileNameParts = file.name.split('.');
 
