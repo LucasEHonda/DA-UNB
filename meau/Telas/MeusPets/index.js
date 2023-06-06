@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
-import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
 import { Octicons, Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { db, storage } from '../../service/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { userFromStorage } from '../../utils/userFromStorage';
 import { ref, getDownloadURL } from 'firebase/storage';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function RegistrarUsuario() {
+  const navigation = useNavigation();
   const [pets, setPets] = useState([]);
 
   async function getPetsByUser() {
@@ -45,47 +48,49 @@ export default function RegistrarUsuario() {
 
   const petCollectionRef = collection(db, "pets");
   useEffect(() => {
-    getPetsByUser();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getPetsByUser();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
-    <ScrollView>
-      <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-          <View style={styles.retangulo1} />
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <View style={styles.retangulo1} />
 
-          <View style={styles.retanguloMenu}>
-            <TouchableOpacity onPress={() => {}}>
-              <View style={styles.iconMenu}>
-                <Octicons name="three-bars" size={24} />
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.textoMenu}>Meus Pets</Text>
-            <TouchableOpacity onPress={() => {}}>
-              <View style={styles.iconLupa}>
-              <Feather name="search" size={24} />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.separatorLine} />
-
-          {pets.map((pet) => (
-            <View key={pet.id}>
-              <View style={styles.retanguloNomePet}>
-                <Text style={styles.textoNomePet}>{pet.name}</Text>
-              </View>
-              <View style={styles.retanguloFoto}>
-                {console.log(pet.imageUrl)}
-                <Image source={{ uri: pet.imageUrl }} style={styles.petImage} />
-              </View>
-              <View style={styles.retanguloinformacoes}>
-                <Text style={styles.textoinformacoes}>INTERESSADOS</Text>
-              </View>
+        <View style={styles.retanguloMenu}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconMenu}>
+              <Octicons name="three-bars" size={24} />
             </View>
-          ))}
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </ScrollView>
+          </TouchableOpacity>
+          <Text style={styles.textoMenu}>Meus Pets</Text>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconLupa}>
+              <Feather name="search" size={24} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.separatorLine} />
+        <ScrollView>
+            {pets.map((pet) => (
+              <View key={pet.id}>
+                <View style={styles.retanguloNomePet}>
+                  <Text style={styles.textoNomePet}>{pet.name}</Text>
+                </View>
+                <View style={styles.retanguloFoto}>
+                  <Image source={{ uri: pet.imageUrl }} style={styles.petImage} />
+                </View>
+                <View style={styles.retanguloinformacoes}>
+                  <Text style={styles.textoinformacoes}>INTERESSADOS</Text>
+                </View>
+              </View>
+            ))}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -102,7 +107,7 @@ const styles = StyleSheet.create({
     height: 24,
     backgroundColor: '#589b9b',
   },
-  
+
   retanguloMenu: {
     width: 360,
     height: 56,
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-    textoMenu: {
+  textoMenu: {
     fontFamily: 'Roboto_500Medium',
     fontSize: 16,
     color: '#434343',
@@ -118,9 +123,8 @@ const styles = StyleSheet.create({
     left: 36,
     top: 18,
     marginLeft: 37,
-    
   },
-  
+
   retanguloNomePet: {
     backgroundColor: '#cfe9e5',
     width: 344,
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     color: '#434343',
   },
- 
+
   retanguloFoto: {
     width: 344,
     height: 183,
@@ -164,7 +168,7 @@ const styles = StyleSheet.create({
     width: 344,
     height: 54,
   },
-  
+
   textoinformacoes: {
     marginBottom: 48,
     fontSize: 14,
@@ -174,7 +178,6 @@ const styles = StyleSheet.create({
 
   containerInfosProfile: {
     marginTop: 28,
-
   },
   informacoesProfile: {
     marginRight: 160,
@@ -191,7 +194,6 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: '#cfe9e5',
     alignItems: 'center',
-
   },
   textoDescricao: {
     fontSize: 14,
@@ -201,8 +203,7 @@ const styles = StyleSheet.create({
   containerInfos: {
     marginTop: 28,
   },
-   
-    
+
   separatorLine: {
     marginTop: 8,
     width: 312,
@@ -210,7 +211,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6e7e8',
   },
 
-
-
+  iconCamera: {
+    marginTop: 44,
+  },
+  petImage: {
+    width: 150,
+    height: 150,
+  },
 });
-   

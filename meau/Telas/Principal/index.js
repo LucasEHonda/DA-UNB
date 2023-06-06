@@ -3,12 +3,62 @@ import { StyleSheet, Text, View,  SafeAreaView, TouchableOpacity, Image} from 'r
 import { useNavigation } from '@react-navigation/native';
 import { Octicons } from '@expo/vector-icons';
 import LogoSrc from "./images/Meau_marca_2.png";
+import React, { useState, useEffect } from 'react';
+import { userFromStorage } from '../../utils/userFromStorage';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../service/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 export default function Principal() {
   const navigation = useNavigation();
-  
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const clearUser = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+    } catch (error) {
+      console.log('Erro ao remover usuário:', error);
+    }
+  };
+  async function sair() {
+    try {
+      await signOut(auth);
+      console.log('Usuário deslogado');
+      clearUser();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Cadastro Login' }]
+      });
+    } catch (error) {
+      console.log('Erro ao deslogar usuário:', error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchUserFromStorage = async () => {
+      try {
+        const storedUser = await userFromStorage();
+        setUser(storedUser);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserFromStorage();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
 
@@ -55,12 +105,31 @@ export default function Principal() {
        <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
       </TouchableOpacity>
 
+      {console.log(user)}
+      {user === null ? (
+        <TouchableOpacity
+          style={styles.LOGIN}
+          onPress={() => navigation.navigate('Cadastro Login')}
+        >
+          <Text style={styles.textoLogin}>login</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.CADASTRO}
+          onPress={() => navigation.navigate('Meus Pets')}
+        >
+          <Text style={styles.textoCADASTRO}>MEUS PETS</Text>
+        </TouchableOpacity>
+      )}
+      {user === null ? <></> : (
+        <TouchableOpacity
+          style={styles.CADASTRO}
+          onPress={sair}
+        >
+          <Text style={styles.textoCADASTRO}>SAIR</Text>
+        </TouchableOpacity>
+      )}
       
-      <TouchableOpacity 
-      style={styles.LOGIN} 
-      onPress ={()=>navigation.navigate('Cadastro Login')}> 
-       <Text style={styles.textoLogin}> login </Text>
-      </TouchableOpacity>
 
       <View>
         <Image source={LogoSrc} style={styles.logoImage} />

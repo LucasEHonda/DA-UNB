@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, Platform } from 'react-native';
 import { Octicons, Ionicons, Entypo } from '@expo/vector-icons';
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../service/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
   
 export function Status12() {
@@ -29,6 +30,7 @@ useEffect(() => {
   
 
   export default function Login() {
+    const navigation = useNavigation();
     const [loggedIn, setLoggedIn] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -74,6 +76,10 @@ useEffect(() => {
       const user = userCredential.user;
       console.log('Usuário logado:', user);
       saveUser(user);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Desenvolvimento de Aplicativos' }]
+      });
     } catch (error) {
       alert(error.message);
     }

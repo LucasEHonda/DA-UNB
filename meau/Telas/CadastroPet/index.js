@@ -148,6 +148,21 @@ export default function CadastrarPet() {
         console.log('deu ruim', error);
       },
       async () => {
+        setEspecie('');
+        setSexo('');
+        setIdade('');
+        setPorte('');
+        setTemperamentos([]);
+        setSaude([]);
+        setNomeAnimal('');
+        setDescricao('');
+        setExigenciasAdocao([]);
+        setAcompanhamentoPosAdocao(false);
+        setOpcaoSelecionada('');
+        setProgresso(0);
+        setFile(null);
+        setSelectedImage(null);
+        navigation.navigate("Meus Pets")
         console.log('deu bom');
       }
     );
