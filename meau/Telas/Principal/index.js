@@ -58,7 +58,7 @@ export default function Principal() {
       
       <TouchableOpacity 
       style={styles.LOGIN} 
-      onPress ={()=>navigation.navigate('Cadastrar Pessoa')}> 
+      onPress ={()=>navigation.navigate('Cadastro Login')}> 
        <Text style={styles.textoLogin}> login </Text>
       </TouchableOpacity>
 

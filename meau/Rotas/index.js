@@ -1,25 +1,53 @@
 import{createDrawerNavigator} from '@react-navigation/drawer';
 import Principal from '../Telas/Principal';
-import Login from '../Telas/Login';
+import Login, { Status12 } from '../Telas/Login';
 import CadastrarPet from '../Telas/CadastroPet';
 import CadastrarPessoa from '../Telas/CadastroPessoal_Ops';
 import RegistrarUsuario from '../Telas/CadastroPessoal_Registro';
 import 'react-native-gesture-handler';
-
+import MeusPets1 from '../Telas/MeusPets';
 
 const Drawer = createDrawerNavigator();
 
 
-export default function Rotas(){
-  
+function createDrawerNavigator1(){
+ if(Status12 ()== false){
+   
  return(
   <Drawer.Navigator initialRouteName="Desenvolvimento de Aplicativos" >
-    <Drawer.Screen name="Desenvolvimento de Aplicativos" component={Principal} 
-    options={{headerShown:false}}/>
-    <Drawer.Screen  name="Login" component={Login}/>
-    <Drawer.Screen  name="Cadastrar Pet" component={CadastrarPet}/>
-    <Drawer.Screen  name="Cadastrar Pessoa" component={CadastrarPessoa}/>
-     <Drawer.Screen  name="Registrar Usuario" component={RegistrarUsuario}/>
-  </Drawer.Navigator> 
- )
+    
+     <Drawer.Screen name="Desenvolvimento de Aplicativos" component={Principal} />
+     <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa}/>
+     <Drawer.Screen name="Login" component={Login}/>
+     <Drawer.Screen name="Registrar Usuario" component={RegistrarUsuario}/>
+     
+  </Drawer.Navigator>
+  )}
+ else {
+   return(
+      <Drawer.Navigator initialRouteName="Desenvolvimento de Aplicativos" >
+         <Drawer.Screen name="Desenvolvimento de Aplicativos" component={Principal} />
+         <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa}/>
+         <Drawer.Screen name="Login" component={Login}/>
+      </Drawer.Navigator> 
+   )}
 }
+
+
+export default function Rotas(){
+   if(Status12 ()== true){  
+ return(
+  <Drawer.Navigator >
+     <Drawer.Screen options= {{headerShown: false}} name="Tela Principal" component={createDrawerNavigator1} />
+     <Drawer.Screen name="Cadastrar Pet" component={CadastrarPet}/>
+     <Drawer.Screen name="Meus Pets" component={MeusPets1}/>
+     
+    </Drawer.Navigator> 
+   
+ )}
+ else {
+   return(
+<Drawer.Navigator >
+     <Drawer.Screen options= {{headerShown: false}} name="Tela Principal" component={createDrawerNavigator1} />
+     </Drawer.Navigator> )
+}}
