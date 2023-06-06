@@ -6,12 +6,32 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from
 import { auth } from '../../service/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  
+export function Status12() {
   const [loggedIn, setLoggedIn] = useState(false);
+ 
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setLoggedIn(true);
+      
+    } else {
+      setLoggedIn(false);
+      
+    }
+  });
 
+  return () => unsubscribe();
+}, []);
+  return loggedIn;
+
+}
+  
+
+  export default function Login() {
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -25,6 +45,7 @@ export default function Login() {
 
     return () => unsubscribe();
   }, []);
+    
 
   const saveUser = async (user) => {
     try {
