@@ -1,30 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
-import { Octicons, Feather } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
+import { Octicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../service/firebase';
-import { db } from '../../service/firebase';
-import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
+import { db, storage } from '../../service/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { userFromStorage } from '../../utils/userFromStorage';
+import { ref, getDownloadURL } from 'firebase/storage';
 
 export default function RegistrarUsuario() {
+  const [pets, setPets] = useState([]);
+
+
+
+  async function getPetsByUser() {
+    const user = await userFromStorage();
+    const querySnapshot = await getDocs(query(petCollectionRef, where("owner", "==", user.uid)));
   
+    const pets_ = [];
+    for (const doc of querySnapshot.docs) {
+      const pet = {
+        ...doc.data(),
+        id: doc.id,
+      };
+      const imageUrl = await getImageURL(pet);
+      pet.imageUrl = imageUrl;
+      pets_.push(pet);
+    }
+    setPets(pets_);
+    console.log(pets_);
+  }
 
-  async function createUser(user){
-    const user_ = await addDoc(userCollectionRef, user)
-  }
-  async function getUsers(){
-    const data = await getDocs(userCollectionRef)
-    console.log(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
-  }
-  async function deleteUser(user_id){
-    const user_ = await deleteDoc(userCollectionRef, user_id)
-  }
+  async function getImageURL(pet) {
+    const user = await userFromStorage()
+    const storageRef = ref(storage, `${user.uid}/${pet.name}_${pet.id}.png`);
+  
+    try {
+      const imageURL = await getDownloadURL(storageRef);
+      return imageURL
+    } catch (error) {
+      const storageRef = ref(storage, `${user.uid}/${pet.name}_${pet.id}.jpeg`);
+      const imageURL = await getDownloadURL(storageRef);
+    }
+  }  
 
-  const userCollectionRef = collection(db, "users")
+  const petCollectionRef = collection(db, "pets")
   useEffect(()=>{
-    getUsers()
+    getPetsByUser()
   }, [])
 
   
@@ -43,20 +65,22 @@ export default function RegistrarUsuario() {
             <Text style={styles.textoMenu}>Meus Pets</Text>
           </View>
           <View style={styles.separatorLine} />
-          <View >
-          <View style={styles.retanguloNomePet}>
-          <Text style={styles.textoNomePet}>Nome do Pet</Text>
-          </View>
-          <View style={styles.retanguloFoto}>
-          <Text style={styles.textoFoto}>FOTO DE PERFIL</Text>
-          </View>
-          <View style={styles.retanguloinformacoes}>
-          <Text style={styles.textoinformacoes}>Interessados</Text>
-          </View>
-          </View>
-
           
-         <StatusBar style="auto" />
+          {pets.map((pet) => (
+            <View key={pet.id}>
+              <View style={styles.retanguloNomePet}>
+                <Text style={styles.textoNomePet}>{pet.name}</Text>
+              </View>
+              <View style={styles.retanguloFoto}>
+                {console.log(pet.imageUrl)}
+                <Image source={{ uri: pet.imageUrl }} style={styles.petImage} />
+              </View>
+              <View style={styles.retanguloinformacoes}>
+                <Text style={styles.textoinformacoes}>Interessados</Text>
+              </View>
+            </View>
+          ))}
+
 
         </KeyboardAvoidingView>
       </SafeAreaView>

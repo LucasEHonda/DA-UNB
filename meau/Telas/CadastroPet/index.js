@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image, ScrollView  } from 'react-native';
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable  } from 'firebase/storage';
 import { storage } from '../../service/firebase';
 import { db } from '../../service/firebase';
-import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addDoc, collection } from 'firebase/firestore';
+import { userFromStorage } from '../../utils/userFromStorage';
+
+
 
 const Checkbox = ({ label, selected, onPress }) => {
   return (
@@ -44,15 +46,14 @@ export default function CadastrarPet() {
   const [porte, setPorte] = useState('');
   const [temperamentos, setTemperamentos] = useState([]);
   const [saude, setSaude] = useState([]);
-
+  const [nomeAnimal, setNomeAnimal] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [exigenciasAdocao, setExigenciasAdocao] = useState([]);
   const [acompanhamentoPosAdocao, setAcompanhamentoPosAdocao] = useState(false);
   const [opcaoSelecionada, setOpcaoSelecionada] = useState('');
-
-
-
   const [progresso, setProgresso] = useState(0);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [file, setFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
 
 
@@ -104,24 +105,37 @@ export default function CadastrarPet() {
     }
   };
 
+  const handleNomeAnimalChange = (value) => {
+    setNomeAnimal(value);
+  };
+  
+  const handleDescricaoChange = (value) => {
+    setDescricao(value);
+  };
 
-
-
-
-
-
-
-
-
-
-
-
-  const handleUpload = async (event) => {
-    event.preventDefault();
+  const handleUpload2 = async (event) => {
     const file = event.target.files[0];
 
     if (!file) return;
-    const storageRef = ref(storage, `images/${file.name}`);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageUrl = reader.result;
+      setSelectedImage(imageUrl);
+    };
+    reader.readAsDataURL(file);
+    setFile(file);
+  };
+  
+  const handleUpload = async (petId) => {
+    if (!nomeAnimal){
+      alert("Preencha o campo 'nome'")
+      return
+    }
+    const user = await userFromStorage();
+    const fileNameParts = file.name.split('.');
+
+    const storageRef = ref(storage, `${user.uid}/${nomeAnimal}_${petId}.${fileNameParts[fileNameParts.length - 1]}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -135,36 +149,29 @@ export default function CadastrarPet() {
       },
       async () => {
         console.log('deu bom');
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setImageUrl(downloadURL);
       }
     );
   };
-  const getUserFromStorage = async () => {
-    try {
-      const user = await AsyncStorage.getItem('user');
-      if (user !== null) {
-        // O usuário foi encontrado na storage
-        return JSON.parse(user);
-      } else {
-        // A chave 'user' não existe na storage
-        return null;
-      }
-    } catch (error) {
-      // Ocorreu um erro ao acessar a storage
-      console.log('Erro ao recuperar o usuário da storage:', error);
-      return null;
-    }
-  };
+
   const petCollectionRef = collection(db, "pets")
-  async function createPet(form){
-    // add o user id no form e passar ele pro addDoc
-    const pet = {}
-    const user = await getUserFromStorage()
-    pet["owner"] = user.uid
+  async function createPet(_){
+    const user = await userFromStorage()
+    const pet = {
+      name: nomeAnimal,
+      specie: especie,
+      gender: sexo,
+      age: idade,
+      size: porte,
+      temperament: temperamentos,
+      health: saude,
+      needs: exigenciasAdocao,
+      owner: user.uid,
+      profileDesciption: descricao
+    }
     const pet_ = await addDoc(petCollectionRef, pet)
-    console.log("deu bom!")
+    handleUpload(pet_.id)
   }
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -206,6 +213,8 @@ export default function CadastrarPet() {
             style={styles.textoinputNomeAnimal}
             placeholder="Nome do animal"
             placeholderTextColor="#bdbdbd"
+            value={nomeAnimal}
+            onChangeText={handleNomeAnimalChange}
           />
           </View>
 
@@ -215,10 +224,10 @@ export default function CadastrarPet() {
           <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
         </View>
 
-        <TouchableOpacity style={styles.containerFoto}>
-          {imageUrl ? (
-              <Image source={{ uri: imageUrl }} style={styles.imagemUpload} resizeMode="contain" />
-            ) : (
+        <View style={styles.containerFoto}>
+          {selectedImage ? (
+            <Image source={{ uri: selectedImage }} style={styles.imagemUpload} resizeMode="contain" />
+          ) : (
             <label htmlFor="fileInput">
               <View style={styles.retanguloFoto}>
                 <View style={styles.iconCamera}>
@@ -232,9 +241,9 @@ export default function CadastrarPet() {
             type="file"
             id="fileInput"
             style={{ display: "none" }}
-            onChange={handleUpload}
+            onChange={handleUpload2}
           />
-        </TouchableOpacity>
+        </View>
 
         {/* Barra de progresso */}
         <View style={styles.progressBar}>
@@ -450,6 +459,9 @@ export default function CadastrarPet() {
             style={styles.textoInputSobre}
             placeholder="Compartilhe a história do animal"
             placeholderTextColor="#bdbdbd"
+            value={descricao}
+            onChangeText={handleDescricaoChange}
+
           />
           </View>
           <View style={styles.divisoria} />
