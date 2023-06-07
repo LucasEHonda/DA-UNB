@@ -87,31 +87,26 @@ export default function Principal() {
       
       </View>
 
-      <TouchableOpacity 
+      {user !== null ? (<TouchableOpacity 
       style={styles.ADOTAR}> 
        <Text style={styles.textoADOTAR}>ADOTAR </Text>
-      </TouchableOpacity>
-           
+      </TouchableOpacity>): <></>}
       
-      <TouchableOpacity 
-      style={styles.AJUDAR} >
-       <Text style={styles.textoAJUDAR}>AJUDAR </Text>
-      </TouchableOpacity>
 
-      
-      <TouchableOpacity 
+      {user !== null ? (<TouchableOpacity 
       style={styles.CADASTRO} 
       onPress ={()=>navigation.navigate('Cadastrar Pet')}> 
        <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
-      </TouchableOpacity>
+      </TouchableOpacity>): <></>}
+      
 
       {console.log(user)}
       {user === null ? (
         <TouchableOpacity
-          style={styles.LOGIN}
+          style={styles.CADASTRO}
           onPress={() => navigation.navigate('Cadastro Login')}
         >
-          <Text style={styles.textoLogin}>login</Text>
+          <Text style={styles.textoCADASTRO}>login</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
