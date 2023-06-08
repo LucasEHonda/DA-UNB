@@ -1,22 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView, Image} from 'react-native';
 import { Octicons, Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../service/firebase';
 import { db } from '../../service/firebase';
-import { addDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
+import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../service/firebase';
+import { useNavigation } from "@react-navigation/native";
 
 export default function RegistrarUsuario() {
+  
+  const navigation = useNavigation();
+
   const [nome, setNome] = useState('');
   const [idade, setIdade] = useState('');
-  const [emaill, setEmaill] = useState('');
   const [estado, setEstado] = useState('');
   const [cidade, setCidade] = useState('');
   const [endereco, setEndereco] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmationPassword, setconfirmationPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [file, setFile] = useState(null);
+
+
+  const handleUpload2 = async (event) => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageUrl = reader.result;
+      setSelectedImage(imageUrl);
+    };
+    reader.readAsDataURL(file);
+    setFile(file);
+  };
+
+  const handleUpload = async (user) => {
+    if (!nome){
+      alert("Preencha o campo 'nome'")
+      return
+    }
+    const fileNameParts = file.name.split('.');
+
+    const storageRef = ref(storage, `${user.id}/profile.${fileNameParts[fileNameParts.length - 1]}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(progress)
+        },
+        (error) => {
+          console.log('deu ruim', error);
+          reject(error);
+        },
+        async () => {
+          const fileLink = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(fileLink);
+        }
+      );
+    });
+  };
+
 
   const handleNomeChange = (value) => {
     setNome(value);
@@ -24,11 +79,6 @@ export default function RegistrarUsuario() {
 
   const handleIdadeChange = (value) => {
     setIdade(value);
-  };
-
-  
-  const handleEmaillChange = (value) => {
-    setEmaill(value);
   };
 
   const handleEstadoChange = (value) => {
@@ -47,10 +97,6 @@ export default function RegistrarUsuario() {
     setTelefone(value);
   };
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmationPassword, setconfirmationPassword] = useState('');
-
   const handleEmailChange = (value) => {
     setEmail(value);
   };
@@ -63,35 +109,44 @@ export default function RegistrarUsuario() {
     setconfirmationPassword(value);
   };
 
+  const handleUsernameChange = (value) => {
+    setUsername(value);
+  };
+
   async function criarUser()  {
     if(email === '' || password === ' '){
       alert('Preencha todos os campos')
       return;
     };
 
-    await createUserWithEmailAndPassword(auth,email, password)
-    .then(value=>{console.log("cadastrado \n" + value.user.uid)})
-    .catch(error => console.log(error));
-
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const docUser = {
+        id: user.user.uid,
+        name: nome,
+        username,
+        address: endereco,
+        age: idade,
+        cellphone: telefone,
+        city: cidade,
+        createdAt: "now",
+        modifiedAt: "now",
+        email,
+        state: estado
+      }
+      const user_ = await addDoc(userCollectionRef, docUser)
+      await AsyncStorage.setItem('user', JSON.stringify(user.user));
+      const profileLink = await handleUpload(docUser)
+      await updateDoc(doc(db, 'users', user_.id), {...docUser, profileLink})
+      navigation.navigate("Meus Pets")
+    } catch (error) {
+      alert(error.code);
+      return
+    }
     
   };
 
-  async function createUser(user){
-    const user_ = await addDoc(userCollectionRef, user)
-  }
-  async function getUsers(){
-    const data = await getDocs(userCollectionRef)
-    console.log(data.docs.map((doc) =>  ({...doc.data(), id: doc.id})))
-  }
-  async function deleteUser(user_id){
-    const user_ = await deleteDoc(userCollectionRef, user_id)
-  }
-
   const userCollectionRef = collection(db, "users")
-  useEffect(()=>{
-    getUsers()
-  }, [])
-
   
   return (
     <ScrollView>
@@ -139,10 +194,10 @@ export default function RegistrarUsuario() {
             <View style={styles.separatorLine} />
 
             <TextInput
-              style={[styles.textInput, emaill !== '' && styles.textInputFilled]}
+              style={[styles.textInput, email !== '' && styles.textInputFilled]}
               placeholder="E-mail"
               placeholderTextColor="#bdbdbd"
-              onChangeText={handleEmaillChange}
+              onChangeText={handleEmailChange}
             />
             <View style={styles.separatorLine} />
 
@@ -185,11 +240,11 @@ export default function RegistrarUsuario() {
 
           <View style={styles.textInputContainer}>
             <TextInput
-              style={[styles.textInput, email ? styles.textInputFilled : null]}
+              style={[styles.textInput, username ? styles.textInputFilled : null]}
               placeholder="Nome de usuário"
               placeholderTextColor="#bdbdbd"
-              value={email}
-              onChangeText={handleEmailChange}
+              value={username}
+              onChangeText={handleUsernameChange}
             />
             <View style={styles.separatorLine} />
             <TextInput
@@ -216,17 +271,29 @@ export default function RegistrarUsuario() {
           </View>
 
 
-          <TouchableOpacity style={styles.containerFoto} onPress={() => {}}>
-            <View style={styles.retanguloFoto}>
-              <View style={styles.iconCamera}>
-                  <Feather name="plus-circle" size={24} color = '#757575'/>
+          <View style={styles.containerFoto}>
+          {selectedImage ? (
+            <Image source={{ uri: selectedImage }} style={styles.imagemUpload} resizeMode="contain" />
+          ) : (
+            <label htmlFor="fileInput">
+              <View style={styles.retanguloFoto}>
+                <View style={styles.iconCamera}>
+                  <Feather name="plus-circle" size={24} color="#757575" />
                 </View>
-              <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
-            </View>
-          </TouchableOpacity>
+                <Text style={styles.textoRetanguloFoto}>adicionar fotos</Text>
+              </View>
+            </label>
+          )}
+          <input
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={handleUpload2}
+          />
+        </View>
 
           <TouchableOpacity style={styles.BotaoCADASTRO}
-          onPress ={()=> criarUser () }>
+          onPress ={criarUser}>
           <Text style={styles.textoBotaoCADASTRO}>FAZER CADASTRO</Text>
         </TouchableOpacity>
 
@@ -338,14 +405,18 @@ const styles = StyleSheet.create({
     color: '#cfe9e5',
   },
   containerFoto: {
+    marginTop: 16,
     alignItems: 'center',
   },
+  imagemUpload: {
+    width: 200,
+    height: 200,
+    marginBottom: 16,
+  },
   retanguloFoto: {
-    width: 128,
+    width: 312,
     height: 128,
-    backgroundColor: '#e6e7e7',
-    borderColor: '#e6e7e7',
-    borderWidth: 2,
+    backgroundColor: '#f1f2f2',
     justifyContent: 'center',
     alignItems: 'center',
   },
