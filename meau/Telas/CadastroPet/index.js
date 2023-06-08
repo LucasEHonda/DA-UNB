@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image, ScrollView  } from 'react-native';
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ref, uploadBytesResumable  } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../service/firebase';
 import { db } from '../../service/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
 import { userFromStorage } from '../../utils/userFromStorage';
+import { useNavigation } from "@react-navigation/native";
 
 
 
@@ -56,7 +57,7 @@ export default function CadastrarPet() {
   const [selectedImage, setSelectedImage] = useState(null);
 
 
-
+  const navigation = useNavigation();
   const handleEspecieSelection = (selectedEspecie) => {
     setEspecie(selectedEspecie === especie ? '' : selectedEspecie);
   };
@@ -135,37 +136,39 @@ export default function CadastrarPet() {
     const user = await userFromStorage();
     const fileNameParts = file.name.split('.');
 
-    const storageRef = ref(storage, `${user.uid}/${nomeAnimal}_${petId}.${fileNameParts[fileNameParts.length - 1]}`);
+    const storageRef = ref(storage, `${user.uid}/pets/${nomeAnimal}_${petId}.${fileNameParts[fileNameParts.length - 1]}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgresso(progress);
-      },
-      (error) => {
-        console.log('deu ruim', error);
-      },
-      async () => {
-        setEspecie('');
-        setSexo('');
-        setIdade('');
-        setPorte('');
-        setTemperamentos([]);
-        setSaude([]);
-        setNomeAnimal('');
-        setDescricao('');
-        setExigenciasAdocao([]);
-        setAcompanhamentoPosAdocao(false);
-        setOpcaoSelecionada('');
-        setProgresso(0);
-        setFile(null);
-        setSelectedImage(null);
-        navigation.navigate("Meus Pets")
-        console.log('deu bom');
-      }
-    );
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgresso(progress);
+        },
+        (error) => {
+          console.log('deu ruim', error);
+          reject(error);
+        },
+        async () => {
+          const fileLink = await getDownloadURL(uploadTask.snapshot.ref);
+          setEspecie('');
+          setSexo('');
+          setIdade('');
+          setPorte('');
+          setTemperamentos([]);
+          setSaude([]);
+          setNomeAnimal('');
+          setDescricao('');
+          setExigenciasAdocao([]);
+          setAcompanhamentoPosAdocao(false);
+          setOpcaoSelecionada('');
+          setProgresso(0);
+          setFile(null);
+          setSelectedImage(null);
+          resolve(fileLink);
+        }
+      );
+    });
   };
 
   const petCollectionRef = collection(db, "pets")
@@ -184,7 +187,9 @@ export default function CadastrarPet() {
       profileDesciption: descricao
     }
     const pet_ = await addDoc(petCollectionRef, pet)
-    handleUpload(pet_.id)
+    const fileLink = await handleUpload(pet_.id)
+    await updateDoc(doc(db, 'pets', pet_.id), {...pet, fileLink})
+    navigation.navigate("Meus Pets")
   }
 
   return (

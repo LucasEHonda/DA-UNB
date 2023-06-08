@@ -100,7 +100,6 @@ export default function Principal() {
       </TouchableOpacity>): <></>}
       
 
-      {console.log(user)}
       {user === null ? (
         <TouchableOpacity
           style={styles.CADASTRO}

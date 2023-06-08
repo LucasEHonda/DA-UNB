@@ -3,10 +3,9 @@ import { Image } from 'react-native';
 import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
 import { Octicons, Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
-import { db, storage } from '../../service/firebase';
+import { db } from '../../service/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { userFromStorage } from '../../utils/userFromStorage';
-import { ref, getDownloadURL } from 'firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -17,33 +16,7 @@ export default function RegistrarUsuario() {
   async function getPetsByUser() {
     const user = await userFromStorage();
     const querySnapshot = await getDocs(query(petCollectionRef, where("owner", "==", user.uid)));
-
-    const pets_ = [];
-    for (const doc of querySnapshot.docs) {
-      const pet = {
-        ...doc.data(),
-        id: doc.id,
-      };
-      const imageUrl = await getImageURL(pet);
-      pet.imageUrl = imageUrl;
-      pets_.push(pet);
-    }
-    setPets(pets_);
-    console.log(pets_);
-  }
-
-  async function getImageURL(pet) {
-    const user = await userFromStorage();
-    const storageRef = ref(storage, `${user.uid}/${pet.name}_${pet.id}.png`);
-
-    try {
-      const imageURL = await getDownloadURL(storageRef);
-      return imageURL;
-    } catch (error) {
-      const storageRefJPEG = ref(storage, `${user.uid}/${pet.name}_${pet.id}.jpeg`);
-      const imageURLJPEG = await getDownloadURL(storageRefJPEG);
-      return imageURLJPEG;
-    }
+    setPets(querySnapshot.docs.map((doc) => doc.data()));
   }
 
   const petCollectionRef = collection(db, "pets");
@@ -76,12 +49,12 @@ export default function RegistrarUsuario() {
         <View style={styles.separatorLine} />
         <ScrollView>
             {pets.map((pet) => (
-              <View key={pet.id}>
+              <View key={pet._id}>
                 <View style={styles.retanguloNomePet}>
                   <Text style={styles.textoNomePet}>{pet.name}</Text>
                 </View>
                 <View style={styles.retanguloFoto}>
-                  <Image source={{ uri: pet.imageUrl }} style={styles.petImage} />
+                  <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
                 </View>
                 <View style={styles.retanguloinformacoes}>
                   <Text style={styles.textoinformacoes}>INTERESSADOS</Text>
