@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
-import { Octicons, Feather, MaterialIcons } from '@expo/vector-icons';
+import { Octicons, Feather, MaterialIcons, AntDesign, Entypo} from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { db } from '../../service/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -10,9 +10,10 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-export default function RegistrarPets() {
+export default function DadosPet() {
   const navigation = useNavigation();
   const [pets, setPets] = useState([]);
+
 
 
   async function getPetsByUser() {
@@ -30,8 +31,9 @@ export default function RegistrarPets() {
     return unsubscribe;
   }, [navigation]);
 
-
-
+  const handlePetDetails = (pet) => {
+    navigation.navigate('Dados Pets', { pet });
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,38 +42,40 @@ export default function RegistrarPets() {
 
         <View style={styles.retanguloMenu}>
           <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconMenu}>
-              <Octicons name="three-bars" size={24} />
+            <View style={styles.iconArrow}>
+            <AntDesign name="arrowleft" size={24} />
             </View>
           </TouchableOpacity>
-          <Text style={styles.textoMenu}>Meus Pets</Text>
+
+          <Text style={styles.textoMenu}>srsdf</Text>
+
           <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconLupa}>
-              <Feather name="search" size={24} />
+            <View style={styles.iconShare}>
+                <Entypo name="share" size={24} />
             </View>
           </TouchableOpacity>
+
         </View>
         <View style={styles.separatorLine} />
         <ScrollView>
             {pets.map((pet) => (
-              <View key={pet._id}>
-                
-                <View style={styles.retanguloNomePet}>
-                  <Text style={styles.textoNomePet}>{pet.name}</Text>
-                  <MaterialIcons name="error" size={24} style={styles.iconError}/>
-                </View>
-
-                <TouchableOpacity onPress={() => navigation.navigate('Dados Pets', { pet })}>
-                  <View style={styles.retanguloFoto}>
-                    <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
-                  </View>
+                <View key={pet._id}>
+                <TouchableOpacity onPress={() => handlePetDetails(pet)}>
+                    <View style={styles.retanguloNomePet}>
+                    <Text style={styles.textoNomePet}>{pet.name}</Text>
+                    <MaterialIcons name="error" size={24} style={styles.iconError}/>
+                    </View>
                 </TouchableOpacity>
 
-                <View style={styles.retanguloinformacoes}>
-                  <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
+                <TouchableOpacity onPress={() => handlePetDetails(pet)}>
+                    <View style={styles.retanguloFoto}>
+                    <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
+                    </View>
+                </TouchableOpacity>
+
                 </View>
-              </View>
             ))}
+
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -89,13 +93,13 @@ const styles = StyleSheet.create({
   retangulo1: {
     width: 360,
     height: 24,
-    backgroundColor: '#589b9b',
+    backgroundColor: '#88c9bf',
   },
 
   retanguloMenu: {
     width: 360,
     height: 56,
-    backgroundColor: '#88c9bf',
+    backgroundColor: '#cfe9e5',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -132,94 +136,16 @@ const styles = StyleSheet.create({
     marginLeft: 15, 
   },
 
-
-
-  iconMenu: {
+  iconArrow: {
     marginLeft: 16,
     marginBottom: 16,
     marginTop: 16,
     color: '#434343',
   },
-  iconLupa: {
+  iconShare: {
     marginLeft: 274,
     marginBottom: 16,
     marginTop: 16,
     color: '#434343',
   },
-
-  retanguloFoto: {
-    width: 344,
-    height: 183,
-    backgroundColor: '#e6e7e7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#d1d1d1',
-    borderRadius: 4, // opcional: adiciona bordas arredondadas
-
-  },
-
-  textoFoto: {
-    marginRight: 150,
-    fontFamily: 'Roboto_400Regular',
-    color: '#cfe9e5',
-  },
-  retanguloinformacoes: {
-    alignItems: 'center',
-    width: 344,
-    height: 54,
-    borderWidth: 1,
-    borderColor: '#d1d1d1',
-    borderRadius: 4, // opcional: adiciona bordas arredondadas
-    marginBottom: 8,
-  },
-
-  textoinformacoes: {
-    marginBottom: 48,
-    fontSize: 14,
-    color: '#757575',
-    fontFamily: 'Roboto_400Regular',
-    marginTop: 8,
-
-  },
-
-  containerInfosProfile: {
-    marginTop: 28,
-  },
-  informacoesProfile: {
-    marginRight: 160,
-    fontFamily: 'Roboto_400Regular',
-    color: '#cfe9e5',
-  },
-
-  containerDescricao: {
-    marginTop: 16,
-    width: 328,
-    height: 80,
-    color: '#cfe9e5',
-    backgroundColor: '#cfe9e5',
-    borderWidth: 4,
-    borderColor: '#cfe9e5',
-    alignItems: 'center',
-  },
-  textoDescricao: {
-    fontSize: 14,
-    fontFamily: 'Roboto_400Regular',
-    color: '#434343',
-  },
-  containerInfos: {
-    marginTop: 28,
-  },
-
-  separatorLine: {
-    marginTop: 8,
-    width: 312,
-    height: 0.8,
-    backgroundColor: '#e6e7e8',
-  },
-  petImage: {
-    width: 344,
-    height: 183,
-  },
-
-});
+})
