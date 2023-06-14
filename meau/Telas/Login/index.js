@@ -141,12 +141,6 @@ useEffect(() => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.botaoEntrar}>
-          <TouchableOpacity onPress={()=> sair () }>
-            <Text style={styles.textoBotaoEntrar}>SAIR</Text>
-          </TouchableOpacity>
-        </View>
-
         <TouchableOpacity style={styles.botaoFacebook}>
           <Ionicons name="logo-facebook" size={16} style={styles.iconFacebook} />
           <Text style={styles.textoBotaoFacebook}>ENTRAR COM FACEBOOK</Text>
