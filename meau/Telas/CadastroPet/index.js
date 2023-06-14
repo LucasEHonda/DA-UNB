@@ -1,25 +1,47 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, SafeAreaView, TouchableOpacity, Image, ScrollView  } from 'react-native';
-import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from '../../service/firebase';
-import { db } from '../../service/firebase';
-import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
-import { userFromStorage } from '../../utils/userFromStorage';
+import React, { useState } from "react";
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
+import {
+  AntDesign,
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../../service/firebase";
+import { db } from "../../service/firebase";
+import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
+import { userFromStorage } from "../../utils/userFromStorage";
 import { useNavigation } from "@react-navigation/native";
-
-
 
 const Checkbox = ({ label, selected, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
+    >
       {selected ? (
         <Ionicons name="ios-checkmark-circle" size={24} color="#757575" />
       ) : (
         <Ionicons name="ios-radio-button-off" size={24} color="#757575" />
       )}
-      <Text style={{ marginLeft: 3, fontFamily: 'Roboto_400Regular', fontSize: 14, color: '#757575' }}>
+      <Text
+        style={{
+          marginLeft: 3,
+          fontFamily: "Roboto_400Regular",
+          fontSize: 14,
+          color: "#757575",
+        }}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -28,11 +50,18 @@ const Checkbox = ({ label, selected, onPress }) => {
 
 const Checkbox2 = ({ label, selected, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.checkboxContainer, selected && styles.checkboxSelected]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.checkboxContainer, selected && styles.checkboxSelected]}
+    >
       {selected ? (
         <Ionicons name="checkbox" size={24} color="#757575" />
       ) : (
-        <MaterialCommunityIcons name="checkbox-blank-outline" size={24} color="#757575" />
+        <MaterialCommunityIcons
+          name="checkbox-blank-outline"
+          size={24}
+          color="#757575"
+        />
       )}
       <Text style={styles.checkboxText}>{label}</Text>
     </TouchableOpacity>
@@ -40,40 +69,42 @@ const Checkbox2 = ({ label, selected, onPress }) => {
 };
 
 export default function CadastrarPet() {
-
-  const [especie, setEspecie] = useState('');
-  const [sexo, setSexo] = useState('');
-  const [idade, setIdade] = useState('');
-  const [porte, setPorte] = useState('');
+  const [especie, setEspecie] = useState("");
+  const [sexo, setSexo] = useState("");
+  const [idade, setIdade] = useState("");
+  const [porte, setPorte] = useState("");
   const [temperamentos, setTemperamentos] = useState([]);
   const [saude, setSaude] = useState([]);
-  const [nomeAnimal, setNomeAnimal] = useState('');
-  const [descricao, setDescricao] = useState('');
+  const [nomeAnimal, setNomeAnimal] = useState("");
+  const [descricao, setDescricao] = useState("");
   const [exigenciasAdocao, setExigenciasAdocao] = useState([]);
   const [acompanhamentoPosAdocao, setAcompanhamentoPosAdocao] = useState(false);
-  const [opcaoSelecionada, setOpcaoSelecionada] = useState('');
+  const [opcaoSelecionada, setOpcaoSelecionada] = useState("");
   const [progresso, setProgresso] = useState(0);
   const [file, setFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-
   const navigation = useNavigation();
   const handleEspecieSelection = (selectedEspecie) => {
-    setEspecie(selectedEspecie === especie ? '' : selectedEspecie);
+    setEspecie(selectedEspecie === especie ? "" : selectedEspecie);
   };
   const handleSexoSelection = (selectedSexo) => {
-    setSexo(selectedSexo === sexo ? '' : selectedSexo);
+    setSexo(selectedSexo === sexo ? "" : selectedSexo);
   };
   const handleIdadeSelection = (selectedIdade) => {
-    setIdade(selectedIdade === idade ? '' : selectedIdade);
+    setIdade(selectedIdade === idade ? "" : selectedIdade);
   };
   const handlePorteSelection = (selectedPorte) => {
-    setPorte(selectedPorte === porte ? '' : selectedPorte);
+    setPorte(selectedPorte === porte ? "" : selectedPorte);
   };
 
   const handleTemperamentoSelection = (selectedTemperamento) => {
     if (temperamentos.includes(selectedTemperamento)) {
-      setTemperamentos(temperamentos.filter((temperamento) => temperamento !== selectedTemperamento));
+      setTemperamentos(
+        temperamentos.filter(
+          (temperamento) => temperamento !== selectedTemperamento
+        )
+      );
     } else {
       setTemperamentos([...temperamentos, selectedTemperamento]);
     }
@@ -89,7 +120,9 @@ export default function CadastrarPet() {
 
   const handleExigenciaAdocaoSelection = (exigencia) => {
     if (exigenciasAdocao.includes(exigencia)) {
-      setExigenciasAdocao(exigenciasAdocao.filter((opcao) => opcao !== exigencia));
+      setExigenciasAdocao(
+        exigenciasAdocao.filter((opcao) => opcao !== exigencia)
+      );
     } else {
       setExigenciasAdocao([...exigenciasAdocao, exigencia]);
     }
@@ -97,7 +130,7 @@ export default function CadastrarPet() {
 
   const handleAcompanhamentoPosAdocaoSelection = () => {
     setAcompanhamentoPosAdocao(!acompanhamentoPosAdocao);
-    setOpcaoSelecionada('');
+    setOpcaoSelecionada("");
   };
 
   const handleOpcaoSelecionada = (opcao) => {
@@ -109,7 +142,7 @@ export default function CadastrarPet() {
   const handleNomeAnimalChange = (value) => {
     setNomeAnimal(value);
   };
-  
+
   const handleDescricaoChange = (value) => {
     setDescricao(value);
   };
@@ -127,41 +160,47 @@ export default function CadastrarPet() {
     reader.readAsDataURL(file);
     setFile(file);
   };
-  
+
   const handleUpload = async (petId) => {
-    if (!nomeAnimal){
-      alert("Preencha o campo 'nome'")
-      return
+    if (!nomeAnimal) {
+      alert("Preencha o campo 'nome'");
+      return;
     }
     const user = await userFromStorage();
-    const fileNameParts = file.name.split('.');
+    const fileNameParts = file.name.split(".");
 
-    const storageRef = ref(storage, `${user.uid}/pets/${nomeAnimal}_${petId}.${fileNameParts[fileNameParts.length - 1]}`);
+    const storageRef = ref(
+      storage,
+      `${user.uid}/pets/${nomeAnimal}_${petId}.${
+        fileNameParts[fileNameParts.length - 1]
+      }`
+    );
     const uploadTask = uploadBytesResumable(storageRef, file);
     return new Promise((resolve, reject) => {
       uploadTask.on(
-        'state_changed',
+        "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setProgresso(progress);
         },
         (error) => {
-          console.log('deu ruim', error);
+          console.log("deu ruim", error);
           reject(error);
         },
         async () => {
           const fileLink = await getDownloadURL(uploadTask.snapshot.ref);
-          setEspecie('');
-          setSexo('');
-          setIdade('');
-          setPorte('');
+          setEspecie("");
+          setSexo("");
+          setIdade("");
+          setPorte("");
           setTemperamentos([]);
           setSaude([]);
-          setNomeAnimal('');
-          setDescricao('');
+          setNomeAnimal("");
+          setDescricao("");
           setExigenciasAdocao([]);
           setAcompanhamentoPosAdocao(false);
-          setOpcaoSelecionada('');
+          setOpcaoSelecionada("");
           setProgresso(0);
           setFile(null);
           setSelectedImage(null);
@@ -171,9 +210,9 @@ export default function CadastrarPet() {
     });
   };
 
-  const petCollectionRef = collection(db, "pets")
-  async function createPet(_){
-    const user = await userFromStorage()
+  const petCollectionRef = collection(db, "pets");
+  async function createPet(_) {
+    const user = await userFromStorage();
     const pet = {
       name: nomeAnimal,
       specie: especie,
@@ -184,30 +223,31 @@ export default function CadastrarPet() {
       health: saude,
       needs: exigenciasAdocao,
       owner: user.uid,
-      profileDesciption: descricao
-    }
-    const pet_ = await addDoc(petCollectionRef, pet)
-    const fileLink = await handleUpload(pet_.id)
-    await updateDoc(doc(db, 'pets', pet_.id), {...pet, fileLink})
-    navigation.navigate("Meus Pets")
+      profileDesciption: descricao,
+    };
+    const pet_ = await addDoc(petCollectionRef, pet);
+    const fileLink = await handleUpload(pet_.id);
+    await updateDoc(doc(db, "pets", pet_.id), { ...pet, fileLink });
+    navigation.navigate("Meus Pets");
   }
 
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        
         <View style={styles.retangulo1} />
         <View style={styles.retanguloCadastroAnimal}>
-          <TouchableOpacity onPress={() => { }}>
-              <View style={styles.iconArrow}>
-                <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconArrow}>
+              <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
+            </View>
+          </TouchableOpacity>
           <Text style={styles.textoCadastroAnimal}>Cadastro do Animal</Text>
         </View>
 
         <View style={styles.Mensagem}>
-          <Text style={styles.textoMensagem}>Tenho interesse em cadastrar o animal para:</Text>
+          <Text style={styles.textoMensagem}>
+            Tenho interesse em cadastrar o animal para:
+          </Text>
         </View>
 
         <View style={styles.botoesContainer}>
@@ -236,9 +276,9 @@ export default function CadastrarPet() {
             value={nomeAnimal}
             onChangeText={handleNomeAnimalChange}
           />
-          </View>
+        </View>
 
-          <View style={styles.divisoria} />
+        <View style={styles.divisoria} />
 
         <View style={styles.FotosAnimal}>
           <Text style={styles.textoFotosAnimal}>FOTOS DO ANIMAL</Text>
@@ -246,7 +286,11 @@ export default function CadastrarPet() {
 
         <View style={styles.containerFoto}>
           {selectedImage ? (
-            <Image source={{ uri: selectedImage }} style={styles.imagemUpload} resizeMode="contain" />
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.imagemUpload}
+              resizeMode="contain"
+            />
           ) : (
             <label htmlFor="fileInput">
               <View style={styles.retanguloFoto}>
@@ -267,27 +311,48 @@ export default function CadastrarPet() {
 
         {/* Barra de progresso */}
         <View style={styles.progressBar}>
-          <View style={{ flex: 1, width: `${progresso}%`, height: 4, backgroundColor: "#ffd358" }} />
+          <View
+            style={{
+              flex: 1,
+              width: `${progresso}%`,
+              height: 4,
+              backgroundColor: "#ffd358",
+            }}
+          />
         </View>
 
         <View style={styles.Especie}>
           <Text style={styles.textoEspecie}>ESPÉCIE</Text>
         </View>
 
-
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Cachorro" selected={especie === 'Cachorro'} onPress={() => handleEspecieSelection('Cachorro')} />
-          <Checkbox label="Gato" selected={especie === 'Gato'} onPress={() => handleEspecieSelection('Gato')} />
+          <Checkbox
+            label="Cachorro"
+            selected={especie === "Cachorro"}
+            onPress={() => handleEspecieSelection("Cachorro")}
+          />
+          <Checkbox
+            label="Gato"
+            selected={especie === "Gato"}
+            onPress={() => handleEspecieSelection("Gato")}
+          />
         </View>
-        
 
         <View style={styles.Sexo}>
           <Text style={styles.textoSexo}>SEXO</Text>
         </View>
-        
+
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Macho" selected={sexo === 'Macho'} onPress={() => handleSexoSelection('Macho')} />
-          <Checkbox label="Fêmea" selected={sexo === 'Fêmea'} onPress={() => handleSexoSelection('Fêmea')} />
+          <Checkbox
+            label="Macho"
+            selected={sexo === "Macho"}
+            onPress={() => handleSexoSelection("Macho")}
+          />
+          <Checkbox
+            label="Fêmea"
+            selected={sexo === "Fêmea"}
+            onPress={() => handleSexoSelection("Fêmea")}
+          />
         </View>
 
         <View style={styles.Porte}>
@@ -295,9 +360,21 @@ export default function CadastrarPet() {
         </View>
 
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Pequeno" selected={porte === 'Pequeno'} onPress={() => handlePorteSelection('Pequeno')} />
-          <Checkbox label="Médio" selected={porte === 'Médio'} onPress={() => handlePorteSelection('Médio')} />
-          <Checkbox label="Grande" selected={porte === 'Grande'} onPress={() => handlePorteSelection('Grande')} />
+          <Checkbox
+            label="Pequeno"
+            selected={porte === "Pequeno"}
+            onPress={() => handlePorteSelection("Pequeno")}
+          />
+          <Checkbox
+            label="Médio"
+            selected={porte === "Médio"}
+            onPress={() => handlePorteSelection("Médio")}
+          />
+          <Checkbox
+            label="Grande"
+            selected={porte === "Grande"}
+            onPress={() => handlePorteSelection("Grande")}
+          />
         </View>
 
         <View style={styles.Idade}>
@@ -305,175 +382,159 @@ export default function CadastrarPet() {
         </View>
 
         <View style={styles.checkboxWrapper}>
-          <Checkbox label="Filhote" selected={idade === 'Filhote'} onPress={() => handleIdadeSelection('Filhote')} />
-          <Checkbox label="Adulto" selected={idade === 'Adulto'} onPress={() => handleIdadeSelection('Adulto')} />
-          <Checkbox label="Idoso" selected={idade === 'Idoso'} onPress={() => handleIdadeSelection('Idoso')} />
+          <Checkbox
+            label="Filhote"
+            selected={idade === "Filhote"}
+            onPress={() => handleIdadeSelection("Filhote")}
+          />
+          <Checkbox
+            label="Adulto"
+            selected={idade === "Adulto"}
+            onPress={() => handleIdadeSelection("Adulto")}
+          />
+          <Checkbox
+            label="Idoso"
+            selected={idade === "Idoso"}
+            onPress={() => handleIdadeSelection("Idoso")}
+          />
         </View>
 
         <View style={styles.Temperamento}>
           <Text style={styles.textoTemperamento}>TEMPERAMENTO</Text>
         </View>
 
-        
         <View style={styles.checkboxRow}>
           <Checkbox2
             label="Brincalhão"
-            selected={temperamentos.includes('Brincalhão')}
-            onPress={() => handleTemperamentoSelection('Brincalhão')}
+            selected={temperamentos.includes("Brincalhão")}
+            onPress={() => handleTemperamentoSelection("Brincalhão")}
           />
           <Checkbox2
             label="Tímido"
-            selected={temperamentos.includes('Tímido')}
-            onPress={() => handleTemperamentoSelection('Tímido')}
+            selected={temperamentos.includes("Tímido")}
+            onPress={() => handleTemperamentoSelection("Tímido")}
           />
           <Checkbox2
             label="Calmo"
-            selected={temperamentos.includes('Calmo')}
-            onPress={() => handleTemperamentoSelection('Calmo')}
+            selected={temperamentos.includes("Calmo")}
+            onPress={() => handleTemperamentoSelection("Calmo")}
           />
         </View>
 
         <View style={styles.checkboxRow}>
           <Checkbox2
             label="Guarda"
-            selected={temperamentos.includes('Guarda')}
-            onPress={() => handleTemperamentoSelection('Guarda')}
+            selected={temperamentos.includes("Guarda")}
+            onPress={() => handleTemperamentoSelection("Guarda")}
           />
           <Checkbox2
             label="Amoroso"
-            selected={temperamentos.includes('Amoroso')}
-            onPress={() => handleTemperamentoSelection('Amoroso')}
+            selected={temperamentos.includes("Amoroso")}
+            onPress={() => handleTemperamentoSelection("Amoroso")}
           />
           <Checkbox2
             label="Preguiçoso"
-            selected={temperamentos.includes('Preguiçoso')}
-            onPress={() => handleTemperamentoSelection('Preguiçoso')}
+            selected={temperamentos.includes("Preguiçoso")}
+            onPress={() => handleTemperamentoSelection("Preguiçoso")}
           />
         </View>
-        
 
         <View style={styles.Saude}>
           <Text style={styles.textoSaude}>SAÚDE</Text>
         </View>
 
-        
         <View style={styles.checkboxRow}>
           <Checkbox2
             label="Vacinado"
-            selected={saude.includes('Vacinado')}
-            onPress={() => handleSaudeSelection('Vacinado')}
+            selected={saude.includes("Vacinado")}
+            onPress={() => handleSaudeSelection("Vacinado")}
           />
           <Checkbox2
             label="Vermifugado"
-            selected={saude.includes('Vermifugado')}
-            onPress={() => handleSaudeSelection('Vermifugado')}
+            selected={saude.includes("Vermifugado")}
+            onPress={() => handleSaudeSelection("Vermifugado")}
           />
         </View>
         <View style={styles.checkboxRow}>
           <Checkbox2
             label="Castrado"
-            selected={saude.includes('Castrado')}
-            onPress={() => handleSaudeSelection('Castrado')}
+            selected={saude.includes("Castrado")}
+            onPress={() => handleSaudeSelection("Castrado")}
           />
           <Checkbox2
             label="Doente"
-            selected={saude.includes('Doente')}
-            onPress={() => handleSaudeSelection('Doente')}
+            selected={saude.includes("Doente")}
+            onPress={() => handleSaudeSelection("Doente")}
           />
         </View>
-    
+
         <View style={styles.inputDoencas}>
           <TextInput
             style={styles.textoinputDoencas}
             placeholder="Doenças do animal"
             placeholderTextColor="#bdbdbd"
           />
-          </View>
+        </View>
 
-          <View style={styles.divisoria} />
+        <View style={styles.divisoria} />
 
         <View style={styles.Exigencias}>
           <Text style={styles.textoExigencias}>EXIGÊNCIAS PARA ADOÇÃO</Text>
         </View>
 
         <View style={styles.checkboxRow}>
-        <Checkbox2
-          label="Termo de adoção"
-          selected={exigenciasAdocao.includes('Termo de adoção')}
-          onPress={() => handleExigenciaAdocaoSelection('Termo de adoção')}
-        />
-        <Checkbox2
-          label="Fotos da casa"
-          selected={exigenciasAdocao.includes('Fotos da casa')}
-          onPress={() => handleExigenciaAdocaoSelection('Fotos da casa')}
-        />
-      </View>
+          <Checkbox2
+            label="Termo de adoção"
+            selected={exigenciasAdocao.includes("Termo de adoção")}
+            onPress={() => handleExigenciaAdocaoSelection("Termo de adoção")}
+          />
+          <Checkbox2
+            label="Fotos da casa"
+            selected={exigenciasAdocao.includes("Fotos da casa")}
+            onPress={() => handleExigenciaAdocaoSelection("Fotos da casa")}
+          />
+        </View>
 
-      <View style={styles.checkboxRow}>
-        <Checkbox2
-          label="Visita prévia ao animal"
-          selected={exigenciasAdocao.includes('Visita prévia ao animal')}
-          onPress={() => handleExigenciaAdocaoSelection('Visita prévia ao animal')}
-        />
-        <Checkbox2
-          label="Acompanhamento pós adoção"
-          selected={acompanhamentoPosAdocao}
-          onPress={handleAcompanhamentoPosAdocaoSelection}
-        />
-      </View>
+        <View style={styles.checkboxRow}>
+          <Checkbox2
+            label="Visita prévia ao animal"
+            selected={exigenciasAdocao.includes("Visita prévia ao animal")}
+            onPress={() =>
+              handleExigenciaAdocaoSelection("Visita prévia ao animal")
+            }
+          />
+          <Checkbox2
+            label="Acompanhamento pós adoção"
+            selected={acompanhamentoPosAdocao}
+            onPress={handleAcompanhamentoPosAdocaoSelection}
+          />
+        </View>
 
-      <View style={styles.checkboxRow}>
-        <Checkbox2
-          label="1 mês"
-          selected={opcaoSelecionada === '1 mês'}
-          onPress={() => handleOpcaoSelecionada('1 mês')}
-          disabled={!acompanhamentoPosAdocao}
-        />
-        <Checkbox2
-          label="3 meses"
-          selected={opcaoSelecionada === '3 meses'}
-          onPress={() => handleOpcaoSelecionada('3 meses')}
-          disabled={!acompanhamentoPosAdocao}
-        />
-        <Checkbox2
-          label="6 meses"
-          selected={opcaoSelecionada === '6 meses'}
-          onPress={() => handleOpcaoSelecionada('6 meses')}
-          disabled={!acompanhamentoPosAdocao}
-        />
-      </View>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <View style={styles.checkboxRow}>
+          <Checkbox2
+            label="1 mês"
+            selected={opcaoSelecionada === "1 mês"}
+            onPress={() => handleOpcaoSelecionada("1 mês")}
+            disabled={!acompanhamentoPosAdocao}
+          />
+          <Checkbox2
+            label="3 meses"
+            selected={opcaoSelecionada === "3 meses"}
+            onPress={() => handleOpcaoSelecionada("3 meses")}
+            disabled={!acompanhamentoPosAdocao}
+          />
+          <Checkbox2
+            label="6 meses"
+            selected={opcaoSelecionada === "6 meses"}
+            onPress={() => handleOpcaoSelecionada("6 meses")}
+            disabled={!acompanhamentoPosAdocao}
+          />
+        </View>
 
         <View style={styles.Sobre}>
           <Text style={styles.textoSobre}>SOBRE O ANIMAL</Text>
         </View>
-        
+
         <View style={styles.inputSobre}>
           <TextInput
             style={styles.textoInputSobre}
@@ -481,16 +542,18 @@ export default function CadastrarPet() {
             placeholderTextColor="#bdbdbd"
             value={descricao}
             onChangeText={handleDescricaoChange}
-
           />
-          </View>
-          <View style={styles.divisoria} />
+        </View>
+        <View style={styles.divisoria} />
 
-          <TouchableOpacity onPress={(form) => {
-    createPet(form);
-  }}  style={styles.BotaoFINALIZAR}>
-            <Text style={styles.textoBotaoFINALIZAR}>COLOCAR PARA ADOÇÃO</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={(form) => {
+            createPet(form);
+          }}
+          style={styles.BotaoFINALIZAR}
+        >
+          <Text style={styles.textoBotaoFINALIZAR}>COLOCAR PARA ADOÇÃO</Text>
+        </TouchableOpacity>
 
         <StatusBar style="auto" />
       </SafeAreaView>
@@ -501,34 +564,34 @@ export default function CadastrarPet() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fafafa",
+    alignItems: "center",
+    justifyContent: "center",
   },
   retangulo1: {
     width: 360,
     height: 24,
-    backgroundColor: '#f7a800',
+    backgroundColor: "#f7a800",
   },
   retanguloCadastroAnimal: {
     width: 360,
     height: 56,
-    backgroundColor: '#ffd358',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: "#ffd358",
+    flexDirection: "row",
+    alignItems: "center",
   },
   textoCadastroAnimal: {
-    fontFamily: 'Roboto_500Medium',
+    fontFamily: "Roboto_500Medium",
     fontSize: 20,
-    color: '#434343',
-    position: 'absolute',
+    color: "#434343",
+    position: "absolute",
     left: 36,
     top: 18,
     marginLeft: 37,
   },
   iconArrow: {
     marginLeft: 12,
-    color: '#434343',
+    color: "#434343",
   },
   Mensagem: {
     marginBottom: 16,
@@ -536,44 +599,43 @@ const styles = StyleSheet.create({
   },
   textoMensagem: {
     fontSize: 14,
-    color: '#757575',
-    fontFamily: 'Roboto_400Regular',
+    color: "#757575",
+    fontFamily: "Roboto_400Regular",
   },
   botoesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 24,
   },
   BotaoADOCAO: {
     width: 100,
     height: 40,
     borderWidth: 2,
-    borderColor: '#ffd358',
-    backgroundColor: '#ffd358',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#ffd358",
+    backgroundColor: "#ffd358",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 50,
-
   },
   textoBotaoADOCAO: {
-    color: '#434343',
+    color: "#434343",
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
   },
   BotaoAJUDA: {
     width: 100,
     height: 40,
     borderWidth: 2,
-    borderColor: '#f1f2f2',
-    backgroundColor: '#f1f2f2',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#f1f2f2",
+    backgroundColor: "#f1f2f2",
+    justifyContent: "center",
+    alignItems: "center",
     marginLeft: 50,
   },
   textoBotaoAJUDA: {
-    color: '#434343',
+    color: "#434343",
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
   },
   MensagemADOCAO: {
     marginTop: 24,
@@ -582,8 +644,8 @@ const styles = StyleSheet.create({
   },
   textoMensagemADOCAO: {
     fontSize: 16,
-    fontFamily: 'Roboto_500Medium',
-    color: '#434343',
+    fontFamily: "Roboto_500Medium",
+    color: "#434343",
   },
   NomeAnimal: {
     marginTop: 20,
@@ -592,8 +654,8 @@ const styles = StyleSheet.create({
   },
   textoNomeAnimal: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   inputNomeAnimal: {
     fontSize: 14,
@@ -604,14 +666,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 8,
     borderWidth: 1,
-    borderColor: '#fafafa',
-    fontFamily: 'Roboto_400Regular',
+    borderColor: "#fafafa",
+    fontFamily: "Roboto_400Regular",
   },
   divisoria: {
     marginTop: 8,
     width: 312,
     height: 0.8,
-    backgroundColor: '#e6e7e8',
+    backgroundColor: "#e6e7e8",
   },
   FotosAnimal: {
     marginTop: 20,
@@ -620,31 +682,30 @@ const styles = StyleSheet.create({
   },
   textoFotosAnimal: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   containerFoto: {
     marginTop: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   retanguloFoto: {
     width: 312,
     height: 128,
-    backgroundColor: '#f1f2f2',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f1f2f2",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textoRetanguloFoto: {
     marginBottom: 48,
     fontSize: 14,
-    color: '#757575',
-    fontFamily: 'Roboto_400Regular',
+    color: "#757575",
+    fontFamily: "Roboto_400Regular",
   },
   iconCamera: {
     marginTop: 44,
-  
   },
-  
+
   Especie: {
     marginTop: 20,
     marginRight: 260,
@@ -652,31 +713,30 @@ const styles = StyleSheet.create({
   },
   textoEspecie: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   checkboxWrapper: {
     flex: 1,
     marginTop: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     marginBottom: 5,
-    
   },
 
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 15,
     marginTop: -2,
   },
 
   checkboxText: {
     marginLeft: 3,
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
   },
   Sexo: {
     marginTop: 20,
@@ -685,8 +745,8 @@ const styles = StyleSheet.create({
   },
   textoSexo: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   Porte: {
     marginTop: 20,
@@ -695,8 +755,8 @@ const styles = StyleSheet.create({
   },
   textoPorte: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   Idade: {
     marginTop: 20,
@@ -705,8 +765,8 @@ const styles = StyleSheet.create({
   },
   textoIdade: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   Temperamento: {
     marginTop: 20,
@@ -715,17 +775,17 @@ const styles = StyleSheet.create({
   },
   textoTemperamento: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   checkboxRow2: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
     marginLeft: 40,
   },
@@ -736,8 +796,8 @@ const styles = StyleSheet.create({
   },
   textoSaude: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
 
   inputDoencas: {
@@ -749,8 +809,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 8,
     borderWidth: 1,
-    borderColor: '#fafafa',
-    fontFamily: 'Roboto_400Regular',
+    borderColor: "#fafafa",
+    fontFamily: "Roboto_400Regular",
   },
   Exigencias: {
     marginTop: 20,
@@ -759,8 +819,8 @@ const styles = StyleSheet.create({
   },
   textoExigencias: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   Sobre: {
     marginTop: 20,
@@ -769,8 +829,8 @@ const styles = StyleSheet.create({
   },
   textoSobre: {
     fontSize: 12,
-    fontFamily: 'Roboto_400Regular',
-    color: '#f7a800',
+    fontFamily: "Roboto_400Regular",
+    color: "#f7a800",
   },
   inputSobre: {
     fontSize: 14,
@@ -781,30 +841,29 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 8,
     borderWidth: 1,
-    borderColor: '#fafafa',
-    fontFamily: 'Roboto_400Regular',
+    borderColor: "#fafafa",
+    fontFamily: "Roboto_400Regular",
   },
   textoInputSobre: {
     fontSize: 14,
-    fontFamily: 'Roboto_400Regular',
-    color: '#bdbdbd',
-
+    fontFamily: "Roboto_400Regular",
+    color: "#bdbdbd",
   },
   BotaoFINALIZAR: {
     width: 232,
     height: 40,
     borderWidth: 2,
-    borderColor: '#ffd358',
-    backgroundColor: '#ffd358',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#ffd358",
+    backgroundColor: "#ffd358",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 24,
     marginBottom: 24,
   },
   textoBotaoFINALIZAR: {
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
     fontSize: 12,
-    color: '#434343',
+    color: "#434343",
   },
   progressBar: {
     width: "100%",
@@ -817,5 +876,4 @@ const styles = StyleSheet.create({
     height: 200,
     marginBottom: 16,
   },
-
 });

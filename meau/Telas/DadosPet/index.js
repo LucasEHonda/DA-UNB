@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Image } from 'react-native';
-import { StyleSheet, Text, View, SafeAreaView, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { Platform } from 'react-native';
-import { db } from '../../service/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { userFromStorage } from '../../utils/userFromStorage';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
+import { Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Platform } from "react-native";
+import { db } from "../../service/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { userFromStorage } from "../../utils/userFromStorage";
+import { useNavigation } from "@react-navigation/native";
 
 export default function DadosPet({ route }) {
   const navigation = useNavigation();
   const [user, setUser] = useState([]);
   const { pet } = route.params;
-  
+
   const userCollectionRef = collection(db, "users");
   async function getUser() {
-    const user_ = await userFromStorage()
-    
-    const querySnapshot = await getDocs(query(userCollectionRef, where("id", "==", user_.uid)));
-    return querySnapshot.docs.map((doc) => doc.data())[0]
+    const user_ = await userFromStorage();
+
+    const querySnapshot = await getDocs(
+      query(userCollectionRef, where("id", "==", user_.uid))
+    );
+    return querySnapshot.docs.map((doc) => doc.data())[0];
   }
 
   useEffect(async () => {
@@ -26,7 +36,10 @@ export default function DadosPet({ route }) {
   }, []);
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
         <View style={styles.retangulo1} />
 
         <View style={styles.retanguloMenu}>
@@ -65,7 +78,9 @@ export default function DadosPet({ route }) {
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Localização:</Text>
-              <Text style={styles.infoValue}>{user.address?.toLowerCase()}</Text>
+              <Text style={styles.infoValue}>
+                {user.address?.toLowerCase()}
+              </Text>
             </View>
           </View>
 
@@ -74,13 +89,19 @@ export default function DadosPet({ route }) {
           <View style={styles.infoContainer}>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Castrado:</Text>
-              <Text style={styles.infoValue}>{pet.health.includes("castrado") ? "Sim" : "Não"}</Text>
+              <Text style={styles.infoValue}>
+                {pet.health.includes("castrado") ? "Sim" : "Não"}
+              </Text>
               <Text style={styles.infoLabel}>Vermifugado:</Text>
-              <Text style={styles.infoValue}>{pet.health.includes("vermifugado") ? "Sim" : "Não"}</Text>
+              <Text style={styles.infoValue}>
+                {pet.health.includes("vermifugado") ? "Sim" : "Não"}
+              </Text>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Vacinado:</Text>
-              <Text style={styles.infoValue}>{pet.health.includes("vacinado") ? "Sim" : "Não"}</Text>
+              <Text style={styles.infoValue}>
+                {pet.health.includes("vacinado") ? "Sim" : "Não"}
+              </Text>
               <Text style={styles.infoLabel}>Doenças:</Text>
               <Text style={styles.infoValue}>Nenhuma</Text>
             </View>
@@ -96,7 +117,9 @@ export default function DadosPet({ route }) {
           <View style={styles.separatorLine} />
 
           <View style={styles.infoContainer}>
-            <Text style={styles.infoValue}>O {pet.name} precisa de: Ajuda financeira e alimento</Text>
+            <Text style={styles.infoValue}>
+              O {pet.name} precisa de: Ajuda financeira e alimento
+            </Text>
           </View>
 
           <View style={styles.separatorLine} />
@@ -121,30 +144,30 @@ export default function DadosPet({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fafafa",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   retangulo1: {
     width: 360,
     height: 24,
-    backgroundColor: '#88c9bf',
+    backgroundColor: "#88c9bf",
   },
 
   retanguloMenu: {
     width: 360,
     height: 56,
-    backgroundColor: '#cfe9e5',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: "#cfe9e5",
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   textoMenu: {
-    fontFamily: 'Roboto_500Medium',
+    fontFamily: "Roboto_500Medium",
     fontSize: 16,
-    color: '#434343',
-    position: 'absolute',
+    color: "#434343",
+    position: "absolute",
     left: 36,
     top: 18,
     marginLeft: 37,
@@ -153,11 +176,11 @@ const styles = StyleSheet.create({
   retanguloFoto: {
     width: 344,
     height: 183,
-    backgroundColor: '#e6e7e7',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#e6e7e7",
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#d1d1d1',
+    borderColor: "#d1d1d1",
     borderRadius: 4,
   },
 
@@ -172,25 +195,25 @@ const styles = StyleSheet.create({
   },
 
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
 
   infoLabel: {
     fontSize: 16,
-    color: '#757575',
-    fontFamily: 'Roboto_500Medium',
+    color: "#757575",
+    fontFamily: "Roboto_500Medium",
   },
 
   infoValue: {
     fontSize: 16,
-    color: '#434343',
+    color: "#434343",
   },
 
   separatorLine: {
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     marginVertical: 10,
   },
 });
