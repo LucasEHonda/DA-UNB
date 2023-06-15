@@ -120,7 +120,7 @@ export default function RegistrarUsuario() {
     };
 
     try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const user = await x(auth, email, password);
       const docUser = {
         id: user.user.uid,
         name: nome,

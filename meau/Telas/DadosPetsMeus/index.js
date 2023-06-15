@@ -33,6 +33,7 @@ export default function DadosPet({ route }) {
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.iconArrow}>
               <AntDesign name="arrowleft" size={24} />
+              
             </View>
           </TouchableOpacity>
 
@@ -193,4 +194,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     marginVertical: 10,
   },
+
+  iconShare:
+  { 
+    marginLeft: 287,
+    paddingVertical:20,
+    }
 });

@@ -10,14 +10,14 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-export default function RegistrarPets() {
+export default function PetsAdotar() {
   const navigation = useNavigation();
   const [pets, setPets] = useState([]);
-
+  
 
   async function getPetsByUser() {
     const user = await userFromStorage();
-    const querySnapshot = await getDocs(query(petCollectionRef, where("owner", "==", user.uid)));
+    const querySnapshot = await getDocs(query(petCollectionRef, where("owner", "!=" , user.uid)));
     setPets(querySnapshot.docs.map((doc) => doc.data()));
   }
 
@@ -44,7 +44,7 @@ export default function RegistrarPets() {
               <Octicons name="three-bars" size={24} />
             </View>
           </TouchableOpacity>
-          <Text style={styles.textoMenu}>Meus Pets</Text>
+          <Text style={styles.textoMenu}>Adotar</Text>
           <TouchableOpacity onPress={() => {}}>
             <View style={styles.iconLupa}>
               <Feather name="search" size={24} />
@@ -58,10 +58,11 @@ export default function RegistrarPets() {
                 
                 <View style={styles.retanguloNomePet}>
                   <Text style={styles.textoNomePet}>{pet.name}</Text>
-                  <MaterialIcons name="error" size={24} style={styles.iconError}/>
+                  <MaterialIcons name="favorite-outline" size={24} style={styles.iconError}/>
+                 
                 </View>
-
-                <TouchableOpacity onPress={() => navigation.navigate('Dados_Meus_Pets', { pet })}>
+                
+                <TouchableOpacity onPress={() => navigation.navigate('Dados Pets Adotar', { pet })}>
                   <View style={styles.retanguloFoto}>
                     <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
                   </View>
@@ -69,6 +70,9 @@ export default function RegistrarPets() {
 
                 <View style={styles.retanguloinformacoes}>
                   <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
+                  
+                  
+                  
                 </View>
               </View>
             ))}
@@ -89,19 +93,19 @@ const styles = StyleSheet.create({
   retangulo1: {
     width: 360,
     height: 24,
-    backgroundColor: '#589b9b',
+    backgroundColor: '#f7a800',
   },
 
   retanguloMenu: {
     width: 360,
     height: 56,
-    backgroundColor: '#88c9bf',
+    backgroundColor: '#ffd358',
     flexDirection: 'row',
     alignItems: 'center',
   },
   textoMenu: {
     fontFamily: 'Roboto_500Medium',
-    fontSize: 16,
+    fontSize: 20,
     color: '#434343',
     position: 'absolute',
     left: 36,
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
   },
 
   retanguloNomePet: {
-    backgroundColor: '#cfe9e5',
+    backgroundColor: '#ffee29b',
     width: 344,
     height: 27,
     flexDirection: 'row',
@@ -131,7 +135,6 @@ const styles = StyleSheet.create({
   iconError: {
     marginLeft: 15, 
   },
-
 
 
   iconMenu: {
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
 
   textoinformacoes: {
     marginBottom: 48,
-    fontSize: 14,
+    fontSize: 12,
     color: '#757575',
     fontFamily: 'Roboto_400Regular',
     marginTop: 8,
