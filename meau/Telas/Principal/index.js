@@ -15,6 +15,7 @@ import { userFromStorage } from "../../utils/userFromStorage";
 import { signOut } from "firebase/auth";
 import { auth } from "../../service/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Principal() {
   const navigation = useNavigation();
@@ -65,77 +66,80 @@ export default function Principal() {
     );
   }
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => {}}>
-        <View style={styles.Menu}>
-          <Octicons name="three-bars" size={24} color="#88c9bf" />
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity onPress={() => {}}>
+          <View style={styles.Menu}>
+            <Octicons name="three-bars" size={24} color="#88c9bf" />
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.Ola}>
+          <Text style={styles.TextoOla}>Olá!</Text>
         </View>
-      </TouchableOpacity>
 
-      <View style={styles.Ola}>
-        <Text style={styles.TextoOla}>Olá!</Text>
-      </View>
+        <View style={styles.Bemvindo}>
+          <Text style={styles.textoBemvindo}>Bem vindo ao Meau!</Text>
 
-      <View style={styles.Bemvindo}>
-        <Text style={styles.textoBemvindo}>Bem vindo ao Meau!</Text>
+          <Text style={styles.textoBemvindo}>
+            Aqui você pode adotar, doar e ajudar
+          </Text>
 
-        <Text style={styles.textoBemvindo}>
-          Aqui você pode adotar, doar e ajudar
-        </Text>
+          <Text style={styles.textoBemvindo}>cães, gatos com facilidade.</Text>
 
-        <Text style={styles.textoBemvindo}>cães, gatos com facilidade.</Text>
+          <Text style={styles.textoBemvindo}> Qual o seu interesse?</Text>
+        </View>
 
-        <Text style={styles.textoBemvindo}> Qual o seu interesse?</Text>
-      </View>
+        {user !== null ? (
+          <TouchableOpacity style={styles.ADOTAR}
+          onPress={() => navigation.navigate("Pets Adotar")}>
+            <Text style={styles.textoADOTAR}>ADOTAR </Text>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
 
-      {user !== null ? (
-        <TouchableOpacity style={styles.ADOTAR}>
-          <Text style={styles.textoADOTAR}>ADOTAR </Text>
-        </TouchableOpacity>
-      ) : (
-        <></>
-      )}
+        {user !== null ? (
+          <TouchableOpacity
+            style={styles.CADASTRO}
+            onPress={() => navigation.navigate("Cadastrar Pet")}
+          >
+            <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
 
-      {user !== null ? (
-        <TouchableOpacity
-          style={styles.CADASTRO}
-          onPress={() => navigation.navigate("Cadastrar Pet")}
-        >
-          <Text style={styles.textoCADASTRO}> CADASTRAR ANIMAL </Text>
-        </TouchableOpacity>
-      ) : (
-        <></>
-      )}
+        {user === null ? (
+          <TouchableOpacity
+            style={styles.CADASTRO}
+            onPress={() => navigation.navigate("Cadastro Login")}
+          >
+            <Text style={styles.textoCADASTRO}>login</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.CADASTRO}
+            onPress={() => navigation.navigate("Meus Pets")}
+          >
+            <Text style={styles.textoCADASTRO}>MEUS PETS</Text>
+          </TouchableOpacity>
+        )}
+        {user === null ? (
+          <></>
+        ) : (
+          <TouchableOpacity style={styles.CADASTRO} onPress={sair}>
+            <Text style={styles.textoCADASTRO}>SAIR</Text>
+          </TouchableOpacity>
+        )}
 
-      {user === null ? (
-        <TouchableOpacity
-          style={styles.CADASTRO}
-          onPress={() => navigation.navigate("Cadastro Login")}
-        >
-          <Text style={styles.textoCADASTRO}>login</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.CADASTRO}
-          onPress={() => navigation.navigate("Meus Pets")}
-        >
-          <Text style={styles.textoCADASTRO}>MEUS PETS</Text>
-        </TouchableOpacity>
-      )}
-      {user === null ? (
-        <></>
-      ) : (
-        <TouchableOpacity style={styles.CADASTRO} onPress={sair}>
-          <Text style={styles.textoCADASTRO}>SAIR</Text>
-        </TouchableOpacity>
-      )}
+        <View>
+          <Image source={LogoSrc} style={styles.logoImage} />
+        </View>
 
-      <View>
-        <Image source={LogoSrc} style={styles.logoImage} />
-      </View>
-
-      <StatusBar style="auto" />
-    </SafeAreaView>
+        <StatusBar style="auto" />
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
