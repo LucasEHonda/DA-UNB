@@ -131,7 +131,11 @@ export default function RegistrarUsuario() {
     }
 
     try {
+<<<<<<< Updated upstream
       const user = await createUserWithEmailAndPassword(auth, email, password);
+=======
+      const user =  await createUserWithEmailAndPassword(auth, email, password);
+>>>>>>> Stashed changes
       const docUser = {
         id: user.user.uid,
         name: nome,
