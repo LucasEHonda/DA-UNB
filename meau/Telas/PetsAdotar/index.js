@@ -34,7 +34,8 @@ export default function PetsAdotar() {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
         <View style={styles.retangulo1} />
 
@@ -52,7 +53,6 @@ export default function PetsAdotar() {
           </TouchableOpacity>
         </View>
         <View style={styles.separatorLine} />
-        <ScrollView>
             {pets.map((pet) => (
               <View key={pet._id}>
 
@@ -69,16 +69,17 @@ export default function PetsAdotar() {
                 </TouchableOpacity>
 
                 <View style={styles.retanguloinformacoes}>
-                  <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
-
-
-
+                  <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>{pet.gender.toUpperCase()}</Text>
+                  <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>{pet.age.toUpperCase()}</Text>
+                  <Text style={styles.textoinformacoes}>{pet.size.toUpperCase()}</Text>
                 </View>
+                
               </View>
             ))}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -114,9 +115,9 @@ const styles = StyleSheet.create({
   },
 
   retanguloNomePet: {
-    backgroundColor: '#ffee29b',
+    backgroundColor: '#fee29b',
     width: 344,
-    height: 27,
+    height: 32,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -168,7 +169,9 @@ const styles = StyleSheet.create({
     color: '#cfe9e5',
   },
   retanguloinformacoes: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     width: 344,
     height: 54,
     borderWidth: 1,
@@ -178,11 +181,9 @@ const styles = StyleSheet.create({
   },
 
   textoinformacoes: {
-    marginBottom: 48,
     fontSize: 12,
     color: '#757575',
     fontFamily: 'Roboto_400Regular',
-    marginTop: 8,
 
   },
 
