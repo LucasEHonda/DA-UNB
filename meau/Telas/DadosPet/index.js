@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, MaterialIcons } from "@expo/vector-icons";
+import { FAB } from 'react-native-paper';
 import { Platform } from "react-native";
 import { db } from "../../service/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -62,6 +63,14 @@ export default function DadosPet({ route }) {
             <TouchableOpacity>
               <View style={styles.retanguloFoto}>
                 <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
+                <FAB
+                  style = {styles.floatingButton}
+                  small
+                  icon = {({ size, color }) => (
+                    <MaterialIcons name="edit" size={24} color="#434343" />
+                  )}
+                  onPress = {() => console.log('Funciona')}
+                />
               </View>
             </TouchableOpacity>
 
@@ -204,6 +213,24 @@ const styles = StyleSheet.create({
     top: 18,
     marginLeft: 37,
   },
+  retanguloFoto: {
+    position: 'relative',
+    width: 360, 
+    height: 184, 
+  },
+  petImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  floatingButton: {
+    position: 'absolute',
+    right: 16,
+    bottom: -25,
+    borderRadius: 28,
+    backgroundColor: '#fafafa',
+  },
+
 
   petImage: {
     width: 360,
@@ -290,9 +317,5 @@ const styles = StyleSheet.create({
       fontFamily: 'Roboto_500Medium',
       color: '#757575',
     },
-
-
-
-
 
 });
