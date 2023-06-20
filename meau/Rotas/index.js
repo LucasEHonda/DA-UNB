@@ -7,6 +7,8 @@ import RegistrarUsuario from "../Telas/CadastroPessoal_Registro";
 import "react-native-gesture-handler";
 import MeusPets1 from "../Telas/MeusPets";
 import DadosPet from "../Telas/DadosPet";
+import PetsAdotar from "../Telas/PetsAdotar";
+
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +50,10 @@ export default function Rotas() {
         />
         <Drawer.Screen name="Cadastrar Pet" component={CadastrarPet} />
         <Drawer.Screen name="Meus Pets" component={MeusPets1} />
+        <Drawer.Screen name="Pets Adotar" component={PetsAdotar} />
         <Drawer.Screen name="Dados Pets" component={DadosPet} />
+        
+        
       </Drawer.Navigator>
     );
   } else {
@@ -63,3 +68,4 @@ export default function Rotas() {
     );
   }
 }
+
