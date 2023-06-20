@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image } from "react-native";
+import { Image, TextInput } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -21,6 +21,11 @@ export default function DadosPet({ route }) {
   const navigation = useNavigation();
   const [user, setUser] = useState([]);
   const { pet } = route.params;
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [name, setName] = useState(pet.name);
+  const [gender, setGender] = useState(pet.gender);
+  const [size, setSize] = useState(pet.size);
+  const [age, setAge] = useState(pet.age);
 
   const userCollectionRef = collection(db, "users");
   async function getUser() {
@@ -35,6 +40,17 @@ export default function DadosPet({ route }) {
   useEffect(async () => {
     setUser(await getUser());
   }, []);
+
+  const handleEditButtonClick = () => {
+    const newIseditMode =  isEditMode ? false: true;
+    setIsEditMode(newIseditMode);
+    console.log(isEditMode)
+  };
+
+  const handleSaveButtonClick = () => {
+    setIsEditMode(false);
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -60,36 +76,65 @@ export default function DadosPet({ route }) {
             </TouchableOpacity>
           </View>
       
-            <TouchableOpacity>
-              <View style={styles.retanguloFoto}>
-                <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
-                <FAB
-                  style = {styles.floatingButton}
-                  small
-                  icon = {({ size, color }) => (
-                    <MaterialIcons name="edit" size={24} color="#434343" />
-                  )}
-                  onPress = {() => console.log('Funciona')}
+          <TouchableOpacity>
+            <View style={styles.retanguloFoto}>
+              <Image source={{ uri: pet.fileLink }} style={styles.petImage} />
+              <FAB
+                style={styles.floatingButton}
+                small
+                icon={({ size, color }) => (
+                  <MaterialIcons name="edit" size={24} color="#434343" />
+                )}
+                onPress={handleEditButtonClick}
+              />
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.retanguloNome}>
+            {isEditMode ? (
+              <TextInput
+                style={styles.textoNome}
+                value={name}
+                onChangeText={setName}
+              />
+            ) : (
+              <Text style={styles.textoNome}>{name}</Text>
+            )}
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>SEXO</Text>
+            <Text style={styles.infoLabel}>PORTE</Text>
+            <Text style={styles.infoLabel}>IDADE</Text>
+          </View>
+
+          <View style={styles.infoRow}>
+            {isEditMode ? (
+              <>
+                <TextInput
+                  style={styles.infoValue}
+                  value={gender}
+                  onChangeText={setGender}
                 />
-              </View>
-            </TouchableOpacity>
-
-            <View style={styles.retanguloNome}>
-              <Text style={styles.textoNome}>{pet.name}</Text>
-            </View>
-
-
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>SEXO</Text>
-              <Text style={styles.infoLabel}>PORTE</Text>
-              <Text style={styles.infoLabel}>IDADE</Text>
-            </View>
-
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{pet.gender}</Text>
-              <Text style={styles.infoValue}>{pet.size}</Text>
-              <Text style={styles.infoValue}>{pet.age}</Text>
-            </View>
+                <TextInput
+                  style={styles.infoValue}
+                  value={size}
+                  onChangeText={setSize}
+                />
+                <TextInput
+                  style={styles.infoValue}
+                  value={age}
+                  onChangeText={setAge}
+                />
+              </>
+            ) : (
+              <>
+                <Text style={styles.infoValue}>{gender}</Text>
+                <Text style={styles.infoValue}>{size}</Text>
+                <Text style={styles.infoValue}>{age}</Text>
+              </>
+            )}
+          </View>
 
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>LOCALIZAÇÃO</Text>
@@ -167,7 +212,7 @@ export default function DadosPet({ route }) {
             <View style={styles.containerButtom}>
               < TouchableOpacity 
                 style={[styles.Buttom, { marginRight: 16 }]}>
-                <Text style={styles.textButtom}>VER INTERESSADOS</Text>
+                {isEditMode ? <Text style={styles.textButtom} onPress={handleSaveButtonClick}>ATUALIZAR PET</Text> : <Text style={styles.textButtom}>VER INTERESSADOS</Text>}
               </TouchableOpacity>
 
               < TouchableOpacity 
