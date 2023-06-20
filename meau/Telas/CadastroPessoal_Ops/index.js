@@ -10,53 +10,57 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function CadastrarPessoa() {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.retangulo1} />
-      <View style={styles.retanguloCadastro}>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.iconArrow}>
-            <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
-          </View>
+    <ScrollView>
+
+      <SafeAreaView style={styles.container}>
+        <View style={styles.retangulo1} />
+        <View style={styles.retanguloCadastro}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconArrow}>
+              <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.textoCadastro}>Cadastro</Text>
+        </View>
+
+        <View style={styles.Ops}>
+          <Text style={styles.TextoOps}>Ops!</Text>
+        </View>
+
+        <View style={styles.Mensagem}>
+          <Text style={styles.textoMensagem}>
+            Você não pode realizar esta ação{"\n"}
+            sem possuir um cadastro.
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.BotaoCADASTRO}
+          onPress={() => navigation.navigate("Registrar Usuario")}
+        >
+          <Text style={styles.textoBotaoCADASTRO}>FAZER CADASTRO</Text>
         </TouchableOpacity>
-        <Text style={styles.textoCadastro}>Cadastro</Text>
-      </View>
 
-      <View style={styles.Ops}>
-        <Text style={styles.TextoOps}>Ops!</Text>
-      </View>
+        <View style={styles.MensagemCadastro}>
+          <Text style={styles.textoMensagemCadastro}>Já possui cadastro?</Text>
+        </View>
 
-      <View style={styles.Mensagem}>
-        <Text style={styles.textoMensagem}>
-          Você não pode realizar esta ação{"\n"}
-          sem possuir um cadastro.
-        </Text>
-      </View>
+        <TouchableOpacity
+          style={styles.BotaoLOGIN}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.textoBotaoLOGIN}>FAZER LOGIN</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.BotaoCADASTRO}
-        onPress={() => navigation.navigate("Registrar Usuario")}
-      >
-        <Text style={styles.textoBotaoCADASTRO}>FAZER CADASTRO</Text>
-      </TouchableOpacity>
-
-      <View style={styles.MensagemCadastro}>
-        <Text style={styles.textoMensagemCadastro}>Já possui cadastro?</Text>
-      </View>
-
-      <TouchableOpacity
-        style={styles.BotaoLOGIN}
-        onPress={() => navigation.navigate("Login")}
-      >
-        <Text style={styles.textoBotaoLOGIN}>FAZER LOGIN</Text>
-      </TouchableOpacity>
-
-      <StatusBar style="auto" />
-    </SafeAreaView>
+        <StatusBar style="auto" />
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 

@@ -38,58 +38,60 @@ export default function RegistrarPets() {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <View style={styles.retangulo1} />
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.container}
+        >
+          <View style={styles.retangulo1} />
 
-        <View style={styles.retanguloMenu}>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconMenu}>
-              <Octicons name="three-bars" size={24} />
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.textoMenu}>Meus Pets</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconLupa}>
-              <Feather name="search" size={24} />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.separatorLine} />
-        <ScrollView>
-          {pets.map((pet) => (
-            <View key={pet._id}>
-              <View style={styles.retanguloNomePet}>
-                <Text style={styles.textoNomePet}>{pet.name}</Text>
-                <MaterialIcons
-                  name="error"
-                  size={24}
-                  style={styles.iconError}
-                />
+          <View style={styles.retanguloMenu}>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.iconMenu}>
+                <Octicons name="three-bars" size={24} />
               </View>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Dados Pets", { pet })}
-              >
-                <View style={styles.retanguloFoto}>
-                  <Image
-                    source={{ uri: pet.fileLink }}
-                    style={styles.petImage}
+            </TouchableOpacity>
+            <Text style={styles.textoMenu}>Meus Pets</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.iconLupa}>
+                <Feather name="search" size={24} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.separatorLine} />
+          
+            {pets.map((pet) => (
+              <View key={pet._id}>
+                <View style={styles.retanguloNomePet}>
+                  <Text style={styles.textoNomePet}>{pet.name}</Text>
+                  <MaterialIcons
+                    name="error"
+                    size={24}
+                    style={styles.iconError}
                   />
                 </View>
-              </TouchableOpacity>
 
-              <View style={styles.retanguloinformacoes}>
-                <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Dados Pets", { pet })}
+                >
+                  <View style={styles.retanguloFoto}>
+                    <Image
+                      source={{ uri: pet.fileLink }}
+                      style={styles.petImage}
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                <View style={styles.retanguloinformacoes}>
+                  <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
+                </View>
               </View>
-            </View>
-          ))}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            ))}
+          
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
   },
   textoMenu: {
     fontFamily: "Roboto_500Medium",
-    fontSize: 16,
+    fontSize: 20,
     color: "#434343",
     position: "absolute",
     left: 36,

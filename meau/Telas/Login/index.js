@@ -19,6 +19,7 @@ import {
 import { auth } from "../../service/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export function Status12() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -115,63 +116,65 @@ export default function Login() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <View style={styles.retangulo1} />
-        <View style={styles.retanguloLogin}>
-          <TouchableOpacity onPress={() => {}}>
-            <View style={styles.iconMenu}>
-              <Octicons name="three-bars" size={24} />
-            </View>
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.container}
+        >
+          <View style={styles.retangulo1} />
+          <View style={styles.retanguloLogin}>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={styles.iconMenu}>
+                <Octicons name="three-bars" size={24} />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.textoLogin}>Login</Text>
+          </View>
+          <View style={styles.textInputContainer}>
+            <TextInput
+              style={[styles.textInput, email ? styles.textInputFilled : null]}
+              placeholder="Nome de usuário"
+              placeholderTextColor="#bdbdbd"
+              value={email}
+              onChangeText={handleEmailChange}
+            />
+            <View style={styles.separatorLine} />
+            <TextInput
+              style={[styles.textInput, password ? styles.textInputFilled : null]}
+              placeholder="Senha"
+              placeholderTextColor="#bdbdbd"
+              value={password}
+              onChangeText={handlePasswordChange}
+              secureTextEntry
+            />
+            <View style={styles.separatorLine} />
+          </View>
+
+          <View style={styles.botaoEntrar}>
+            <TouchableOpacity onPress={() => Logar()}>
+              <Text style={styles.textoBotaoEntrar}>ENTRAR</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.botaoFacebook}>
+            <Ionicons
+              name="logo-facebook"
+              size={16}
+              style={styles.iconFacebook}
+            />
+            <Text style={styles.textoBotaoFacebook}>ENTRAR COM FACEBOOK</Text>
           </TouchableOpacity>
-          <Text style={styles.textoLogin}>Login</Text>
-        </View>
-        <View style={styles.textInputContainer}>
-          <TextInput
-            style={[styles.textInput, email ? styles.textInputFilled : null]}
-            placeholder="Nome de usuário"
-            placeholderTextColor="#bdbdbd"
-            value={email}
-            onChangeText={handleEmailChange}
-          />
-          <View style={styles.separatorLine} />
-          <TextInput
-            style={[styles.textInput, password ? styles.textInputFilled : null]}
-            placeholder="Senha"
-            placeholderTextColor="#bdbdbd"
-            value={password}
-            onChangeText={handlePasswordChange}
-            secureTextEntry
-          />
-          <View style={styles.separatorLine} />
-        </View>
 
-        <View style={styles.botaoEntrar}>
-          <TouchableOpacity onPress={() => Logar()}>
-            <Text style={styles.textoBotaoEntrar}>ENTRAR</Text>
+          <TouchableOpacity style={styles.botaoGoogle}>
+            <Entypo name="google-" size={16} style={styles.iconGoogle} />
+            <Text style={styles.textoBotaoGoogle}>ENTRAR COM GOOGLE</Text>
           </TouchableOpacity>
-        </View>
 
-        <TouchableOpacity style={styles.botaoFacebook}>
-          <Ionicons
-            name="logo-facebook"
-            size={16}
-            style={styles.iconFacebook}
-          />
-          <Text style={styles.textoBotaoFacebook}>ENTRAR COM FACEBOOK</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.botaoGoogle}>
-          <Entypo name="google-" size={16} style={styles.iconGoogle} />
-          <Text style={styles.textoBotaoGoogle}>ENTRAR COM GOOGLE</Text>
-        </TouchableOpacity>
-
-        <StatusBar style="auto" />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          <StatusBar style="auto" />
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
