@@ -10,20 +10,16 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function DadosPetsAdotar({ route }) {
   const navigation = useNavigation();
-  const [user, setUser] = useState([]);
   const { pet } = route.params;
 
   const userCollectionRef = collection(db, "users");
-  async function getUser() {
+  async function getOwner(ownerId) {
     const user_ = await userFromStorage()
 
-    const querySnapshot = await getDocs(query(userCollectionRef, where("id", "==", user_.uid)));
+    const querySnapshot = await getDocs(query(userCollectionRef, where("id", "==", ownerId)));
     return querySnapshot.docs.map((doc) => doc.data())[0]
   }
 
-  useEffect(async () => {
-    setUser(await getUser());
-  }, []);
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -71,7 +67,7 @@ export default function DadosPetsAdotar({ route }) {
                 <Text style={styles.infoLabel}>LOCALIZAÇÃO</Text>
               </View>
                 <View style={styles.infoRow}>
-                <Text style={styles.infoValue}>{user.address?.toLowerCase()}</Text>
+                <Text style={styles.infoValue}>{getOwner(pet.ownerId)?.address?.toLowerCase()}</Text>
               </View>
 
 
