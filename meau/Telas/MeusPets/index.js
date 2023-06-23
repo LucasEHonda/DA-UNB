@@ -25,7 +25,13 @@ export default function RegistrarPets() {
     const querySnapshot = await getDocs(
       query(petCollectionRef, where("owner", "==", user.uid))
     );
-    setPets(querySnapshot.docs.map((doc) => doc.data()));
+
+    const pets = querySnapshot.docs.map((doc) => {
+      const petData = doc.data();
+      return { id: doc.id, ...petData };
+    });
+
+    setPets(pets);
   }
 
   const petCollectionRef = collection(db, "pets");
@@ -60,35 +66,34 @@ export default function RegistrarPets() {
             </TouchableOpacity>
           </View>
           <View style={styles.separatorLine} />
-          
-            {pets.map((pet) => (
-              <View key={pet._id}>
-                <View style={styles.retanguloNomePet}>
-                  <Text style={styles.textoNomePet}>{pet.name}</Text>
-                  <MaterialIcons
-                    name="error"
-                    size={24}
-                    style={styles.iconError}
+
+          {pets.map((pet) => (
+            <View key={pet.id}>
+              <View style={styles.retanguloNomePet}>
+                <Text style={styles.textoNomePet}>{pet.name}</Text>
+                <MaterialIcons
+                  name="error"
+                  size={24}
+                  style={styles.iconError}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Dados Pets", { pet })}
+              >
+                <View style={styles.retanguloFoto}>
+                  <Image
+                    source={{ uri: pet.fileLink }}
+                    style={styles.petImage}
                   />
                 </View>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Dados Pets", { pet })}
-                >
-                  <View style={styles.retanguloFoto}>
-                    <Image
-                      source={{ uri: pet.fileLink }}
-                      style={styles.petImage}
-                    />
-                  </View>
-                </TouchableOpacity>
-
-                <View style={styles.retanguloinformacoes}>
-                  <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
-                </View>
+              <View style={styles.retanguloinformacoes}>
+                <Text style={styles.textoinformacoes}>NOVOS INTERESSADOS</Text>
               </View>
-            ))}
-          
+            </View>
+          ))}
         </KeyboardAvoidingView>
       </SafeAreaView>
     </ScrollView>

@@ -91,8 +91,10 @@ export default function Principal() {
         </View>
 
         {user !== null ? (
-          <TouchableOpacity style={styles.ADOTAR}
-          onPress={() => navigation.navigate("Pets Adotar")}>
+          <TouchableOpacity
+            style={styles.ADOTAR}
+            onPress={() => navigation.navigate("Pets Adotar")}
+          >
             <Text style={styles.textoADOTAR}>ADOTAR </Text>
           </TouchableOpacity>
         ) : (

@@ -141,7 +141,10 @@ export default function Login() {
             />
             <View style={styles.separatorLine} />
             <TextInput
-              style={[styles.textInput, password ? styles.textInputFilled : null]}
+              style={[
+                styles.textInput,
+                password ? styles.textInputFilled : null,
+              ]}
               placeholder="Senha"
               placeholderTextColor="#bdbdbd"
               value={password}
