@@ -17,7 +17,6 @@ export default function CadastrarPessoa() {
 
   return (
     <ScrollView>
-
       <SafeAreaView style={styles.container}>
         <View style={styles.retangulo1} />
         <View style={styles.retanguloCadastro}>

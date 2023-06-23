@@ -10,8 +10,6 @@ import DadosPet from "../Telas/DadosPet";
 import DadosPetsAdotar from "../Telas/DadosPetsAdotar";
 import PetsAdotar from "../Telas/PetsAdotar";
 
-
-
 const Drawer = createDrawerNavigator();
 
 function createDrawerNavigator1() {
@@ -55,7 +53,6 @@ export default function Rotas() {
         <Drawer.Screen name="Pets Adotar" component={PetsAdotar} />
         <Drawer.Screen name="Dados Pets" component={DadosPet} />
         <Drawer.Screen name="Dados Pets Adotar" component={DadosPetsAdotar} />
-
       </Drawer.Navigator>
     );
   } else {
@@ -70,4 +67,3 @@ export default function Rotas() {
     );
   }
 }
-

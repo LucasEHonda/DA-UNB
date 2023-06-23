@@ -224,6 +224,7 @@ export default function CadastrarPet() {
       needs: exigenciasAdocao,
       owner: user.uid,
       profileDesciption: descricao,
+      readyToPublisher: false,
     };
     const pet_ = await addDoc(petCollectionRef, pet);
     const fileLink = await handleUpload(pet_.id);
@@ -236,7 +237,11 @@ export default function CadastrarPet() {
       <SafeAreaView style={styles.container}>
         <View style={styles.retangulo1} />
         <View style={styles.retanguloCadastroAnimal}>
-          <TouchableOpacity onPress={() => navigation.navigate("Desenvolvimento de Aplicativos")}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Desenvolvimento de Aplicativos")
+            }
+          >
             <View style={styles.iconArrow}>
               <AntDesign name="arrowleft" size={24} style={styles.iconArrow} />
             </View>
