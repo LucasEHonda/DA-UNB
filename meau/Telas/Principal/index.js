@@ -68,7 +68,7 @@ export default function Principal() {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <View style={styles.Menu}>
             <Octicons name="three-bars" size={24} color="#88c9bf" />
           </View>

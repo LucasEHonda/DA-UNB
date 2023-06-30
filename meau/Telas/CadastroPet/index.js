@@ -75,6 +75,7 @@ export default function CadastrarPet() {
   const [porte, setPorte] = useState("");
   const [temperamentos, setTemperamentos] = useState([]);
   const [saude, setSaude] = useState([]);
+  const [exibirDoencas, setExibirDoencas] = useState(false);
   const [nomeAnimal, setNomeAnimal] = useState("");
   const [descricao, setDescricao] = useState("");
   const [exigenciasAdocao, setExigenciasAdocao] = useState([]);
@@ -111,6 +112,10 @@ export default function CadastrarPet() {
   };
 
   const handleSaudeSelection = (selectedSaude) => {
+
+    if (selectedSaude === "Doente") {
+      setExibirDoencas(!exibirDoencas);
+    }
     if (saude.includes(selectedSaude)) {
       setSaude(saude.filter((opcao) => opcao !== selectedSaude));
     } else {
@@ -471,14 +476,15 @@ export default function CadastrarPet() {
             selected={saude.includes("Doente")}
             onPress={() => handleSaudeSelection("Doente")}
           />
-        </View>
-
-        <View style={styles.inputDoencas}>
-          <TextInput
-            style={styles.textoinputDoencas}
-            placeholder="Doenças do animal"
-            placeholderTextColor="#bdbdbd"
-          />
+          {exibirDoencas && (
+            <View style={styles.inputDoencas}>
+              <TextInput
+                style={styles.textoinputDoencas}
+                placeholder="Doenças do animal"
+                placeholderTextColor="#bdbdbd"
+              />
+            </View>
+          )}
         </View>
 
         <View style={styles.divisoria} />
@@ -552,8 +558,9 @@ export default function CadastrarPet() {
         <View style={styles.divisoria} />
 
         <TouchableOpacity
-          onPress={(form) => {
+          onPress={() => {
             createPet(form);
+            navigation.navigate("Cadastrar Pet 2");
           }}
           style={styles.BotaoFINALIZAR}
         >
@@ -808,10 +815,10 @@ const styles = StyleSheet.create({
   inputDoencas: {
     fontSize: 14,
     width: 312,
-    marginTop: 8,
+    marginTop: 20,
     marginLeft: 24,
     marginRight: 24,
-    marginTop: 20,
+    marginTop: 8,
     paddingHorizontal: 8,
     borderWidth: 1,
     borderColor: "#fafafa",
