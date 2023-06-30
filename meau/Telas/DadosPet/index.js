@@ -158,10 +158,10 @@ export default function DadosPet({ route }) {
           <View style={styles.retangulo1} />
 
           <View style={styles.retanguloMenu}>
-            <TouchableOpacity>
-              <View style={styles.iconArrow}>
-                <AntDesign name="arrowleft" size={24} />
-              </View>
+            <TouchableOpacity
+              style={styles.iconArrow}
+              onPress={() => navigation.navigate("Meus Pets")}>
+              <AntDesign name="arrowleft" size={24} />
             </TouchableOpacity>
 
             <Text style={styles.textoMenu}>{pet.name}</Text>
@@ -504,7 +504,9 @@ export default function DadosPet({ route }) {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.Buttom}>
+            <TouchableOpacity 
+              style={styles.Buttom}
+              onPress={() => navigation.navigate("Remover Pet")}>
               <Text style={styles.textButtom}>REMOVER PET</Text>
             </TouchableOpacity>
           </View>

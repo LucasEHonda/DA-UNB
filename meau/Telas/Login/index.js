@@ -21,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 
-export function Status12() {
+export function StatusUser() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
