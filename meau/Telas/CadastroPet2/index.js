@@ -26,7 +26,7 @@ export default function CadastrarPessoa() {
                     <Octicons name="three-bars" size={24} /> 
                 </View>
             </TouchableOpacity>
-            <Text style={styles.textoMenu}>Remover Pet</Text>
+            <Text style={styles.textoMenu}>Cadastro do Animal</Text>
             </View>
 
             <Text style={styles.textoCentral}>Eba!</Text>
