@@ -26,7 +26,7 @@ export default function PetsAdotar() {
       query(
         petCollectionRef,
         where("owner", "!=", user.uid),
-        where("readyToPublisher", "==", true)
+        where("readyToPublisher", "in", [true, "true"]),
       )
     );
     setPets(querySnapshot.docs.map((doc) => doc.data()));
