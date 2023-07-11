@@ -30,6 +30,8 @@ import {
 } from "firebase/firestore";
 import { userFromStorage } from "../../utils/userFromStorage";
 import { useNavigation } from "@react-navigation/native";
+import { storage } from "../../service/firebase"
+import { ref, deleteObject } from "firebase/storage";
 
 export default function DadosPet({ route }) {
   const navigation = useNavigation();
@@ -150,6 +152,13 @@ export default function DadosPet({ route }) {
   };
 
   async function handleRemovePet(){
+    try {
+      const storageRef = ref(storage, pet.fileLink);
+      await deleteObject(storageRef);
+    } catch (error) {
+      console.error('Erro ao excluir o arquivo: ', error);
+      return
+    }
     await deleteDoc(doc(db, "pets", pet.id))
     navigation.navigate("Remover Pet")
   }

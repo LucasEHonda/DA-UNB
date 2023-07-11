@@ -559,7 +559,7 @@ export default function CadastrarPet() {
 
         <TouchableOpacity
           onPress={() => {
-            createPet(form);
+            createPet();
             navigation.navigate("Cadastrar Pet 2");
           }}
           style={styles.BotaoFINALIZAR}
