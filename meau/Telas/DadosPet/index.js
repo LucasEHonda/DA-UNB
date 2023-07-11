@@ -25,6 +25,7 @@ import {
   query,
   where,
   updateDoc,
+  deleteDoc,
   doc,
 } from "firebase/firestore";
 import { userFromStorage } from "../../utils/userFromStorage";
@@ -147,6 +148,11 @@ export default function DadosPet({ route }) {
     updateDoc(doc(db, "pets", pet.id), { ...newPet });
     setIsEditMode(false);
   };
+
+  async function handleRemovePet(){
+    await deleteDoc(doc(db, "pets", pet.id))
+    navigation.navigate("Remover Pet")
+  }
 
   return (
     <ScrollView>
@@ -506,7 +512,7 @@ export default function DadosPet({ route }) {
 
             <TouchableOpacity 
               style={styles.Buttom}
-              onPress={() => navigation.navigate("Remover Pet")}>
+              onPress={handleRemovePet}>
               <Text style={styles.textButtom}>REMOVER PET</Text>
             </TouchableOpacity>
           </View>
