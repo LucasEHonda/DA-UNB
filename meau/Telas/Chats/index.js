@@ -14,31 +14,37 @@ import { Platform } from "react-native";
 import { db } from "../../service/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { userFromStorage } from "../../utils/userFromStorage";
 
-export default function Interessados({ route }) {
-  const { interested } = route.params;
+export default function Chats() {
   const navigation = useNavigation();
-  const [users, setUsers] = useState([]);
+  const [chats, setChats] = useState([]);
+  const [user, setUser] = useState({});
 
-  async function getUsers(interested) {
-    const usersObjects = [...users];
-    for (const interest of interested) {
-      const docs = await getDocs(
-        query(collection(db, "users"), where("id", "==", interest))
-      );
-      docs.forEach((doc) => {
-        const user = doc.data();
-        usersObjects.push(user);
-      });
-    }
-    setUsers(usersObjects);
+  async function getChats() {
+    const userr = await getUser()
+    const querySnapshot = await getDocs(query(collection(db, "chats"), where("owner", "==", userr.id)))
+    const chats = querySnapshot.docs.map((doc) => {
+        const petData = doc.data();
+        return { id: doc.id, ...petData };
+      })
+    setChats(chats)
+  }
+  async function getUser() {
+    const user_ = await userFromStorage();
+
+    const querySnapshot = await getDocs(
+      query(collection(db, "users"), where("id", "==", user_.uid))
+    );
+    const user__ = querySnapshot.docs.map((doc) => doc.data())[0];
+    setUser(user__);
+    return user__
   }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getUsers(interested);
+      getChats();      
     });
-
     return unsubscribe;
   }, [navigation]);
 
@@ -57,7 +63,7 @@ export default function Interessados({ route }) {
                 <Octicons name="three-bars" size={24} />
               </View>
             </TouchableOpacity>
-            <Text style={styles.textoMenu}>Interessados</Text>
+            <Text style={styles.textoMenu}>Chats</Text>
             <TouchableOpacity onPress={() => {}}>
               <View style={styles.iconLupa}>
                 <Feather name="search" size={24} />
@@ -65,19 +71,20 @@ export default function Interessados({ route }) {
             </TouchableOpacity>
           </View>
           <View style={styles.separatorLine} />
-          {users.map((user) => (
-            <View key={user?.id}>
+          {chats.map((chat) => (
+            <View key={chat?.id}>
               <View style={styles.retanguloNomePet}>
-                <Text style={styles.textoNomePet}>{user?.name}</Text>
+                <Text style={styles.textoNomePet}>
+                  {chat?.interestedUser?.name} | {chat?.pet?.name}
+                </Text>
               </View>
 
-              <TouchableOpacity
-                onPress={() => {}
-                }
-              >
+              <TouchableOpacity onPress={() => {navigation.navigate("Chat", {
+                  messages: chat.messages
+                })}}>
                 <View style={styles.retanguloFoto}>
                   <Image
-                    source={{ uri: user?.profileLink }}
+                    source={{ uri: chat?.interestedUser?.profileLink }}
                     style={styles.petImage}
                   />
                 </View>
@@ -85,21 +92,12 @@ export default function Interessados({ route }) {
 
               <View style={styles.retanguloinformacoes}>
                 <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>
-                  {user?.age?.toUpperCase()}
-                </Text>
-                <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>
-                  {user?.city?.toUpperCase()}
-                </Text>
-                <Text style={styles.textoinformacoes}>
-                  {user?.state?.toUpperCase()}
+                  {chat?.messages[chat?.messages?.length - 1]?.message}
                 </Text>
               </View>
             </View>
           ))}
         </KeyboardAvoidingView>
-        <TouchableOpacity style={[styles.Buttom, { marginRight: 16 }]} onPress={() => {navigation.navigate("Chats");}}>
-            <Text style={styles.textButtom}>IR PARA O CHAT</Text>
-        </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
   );
@@ -260,5 +258,5 @@ const styles = StyleSheet.create({
     marginBottom: 28,
     marginTop: 28,
     borderRadius: 4,
-  }
+  },
 });
