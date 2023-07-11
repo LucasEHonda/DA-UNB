@@ -33,8 +33,11 @@ function createDrawerNavigator1() {
           name="Desenvolvimento de Aplicativos"
           component={Principal}
         />
-        <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa} />
-        <Drawer.Screen name="Login" component={Login} />
+        {/* <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa} />
+        <Drawer.Screen name="Login" component={Login} /> */}
+        
+        <Drawer.Screen name="Meus Pets" component={RegistrarPets} />
+        <Drawer.Screen name="Pets Adotar" component={PetsAdotar} />
 
       </Drawer.Navigator>
     );
