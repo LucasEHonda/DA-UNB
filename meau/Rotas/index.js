@@ -18,12 +18,15 @@ const Drawer = createDrawerNavigator();
 function createDrawerNavigator1() {
   if (StatusUser() == false) {
     return (
-      <Drawer.Navigator initialRouteName = "Introducao">
-        <Drawer.Screen name = "Introducao" component = {Introducao} />
-        <Drawer.Screen name = "Desenvolvimento de Aplicativos" component = {Principal} />
-        <Drawer.Screen name = "Cadastro Login" component = {CadastrarPessoa} />
-        <Drawer.Screen name = "Login" component = {Login} />
-        <Drawer.Screen name = "Registrar Usuario" component = {RegistrarUsuario} />
+      <Drawer.Navigator initialRouteName="Introducao">
+        <Drawer.Screen name="Introducao" component={Introducao} />
+        <Drawer.Screen
+          name="Desenvolvimento de Aplicativos"
+          component={Principal}
+        />
+        <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa} />
+        <Drawer.Screen name="Login" component={Login} />
+        <Drawer.Screen name="Registrar Usuario" component={RegistrarUsuario} />
       </Drawer.Navigator>
     );
   } else {
@@ -35,10 +38,9 @@ function createDrawerNavigator1() {
         />
         {/* <Drawer.Screen name="Cadastro Login" component={CadastrarPessoa} />
         <Drawer.Screen name="Login" component={Login} /> */}
-        
+
         <Drawer.Screen name="Meus Pets" component={RegistrarPets} />
         <Drawer.Screen name="Pets Adotar" component={PetsAdotar} />
-
       </Drawer.Navigator>
     );
   }

@@ -112,7 +112,6 @@ export default function CadastrarPet() {
   };
 
   const handleSaudeSelection = (selectedSaude) => {
-
     if (selectedSaude === "Doente") {
       setExibirDoencas(!exibirDoencas);
     }

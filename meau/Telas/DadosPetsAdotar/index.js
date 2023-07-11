@@ -11,8 +11,14 @@ import {
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { db } from "../../service/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { userFromStorage } from "../../utils/userFromStorage";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
 export default function DadosPetsAdotar({ route }) {
@@ -31,6 +37,20 @@ export default function DadosPetsAdotar({ route }) {
   useEffect(() => {
     getOwner(pet.owner);
   }, []);
+
+  async function handleInterest() {
+    const interested = pet.interested || [];
+    if (interested.includes(owner.id)) {
+      alert("Você ja está listado como interessado para esse pet.");
+    }
+    interested.push(owner.id);
+    const newPet = {
+      ...pet,
+      interested,
+    };
+    delete newPet.id;
+    await updateDoc(doc(db, "pets", pet.id), newPet);
+  }
 
   return (
     <ScrollView>
@@ -146,8 +166,12 @@ export default function DadosPetsAdotar({ route }) {
             <Text style={styles.infoValue}>{pet.profileDesciption}</Text>
           </View>
 
-          <TouchableOpacity style={styles.CADASTRO} onPress={() => {}}>
-            <Text style={styles.textoCADASTRO}>PRETENDO ADOTAR</Text>
+          <TouchableOpacity style={styles.CADASTRO} onPress={handleInterest}>
+            {(pet.interested || []).includes(owner.id) ? (
+              <Text style={styles.textoCADASTRO}>NA LISTA PARA ADOÇÃO</Text>
+            ) : (
+              <Text style={styles.textoCADASTRO}>PRETENDO ADOTAR</Text>
+            )}
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </SafeAreaView>

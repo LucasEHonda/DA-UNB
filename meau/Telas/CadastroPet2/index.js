@@ -19,34 +19,36 @@ export default function CadastrarPessoa() {
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
 
-            <View style={styles.retangulo1} />
-            <View style={styles.retanguloMenu}>
-            <TouchableOpacity onPress={() => {}}>
-                <View style={styles.iconMenu}>
-                    <Octicons name="three-bars" size={24} /> 
-                </View>
-            </TouchableOpacity>
-            <Text style={styles.textoMenu}>Cadastro do Animal</Text>
+        <View style={styles.retangulo1} />
+        <View style={styles.retanguloMenu}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconMenu}>
+              <Octicons name="three-bars" size={24} />
             </View>
+          </TouchableOpacity>
+          <Text style={styles.textoMenu}>Cadastro do Animal</Text>
+        </View>
 
-            <Text style={styles.textoCentral}>Eba!</Text>
+        <Text style={styles.textoCentral}>Eba!</Text>
 
-            <Text style={styles.textoConfirmacao}>O cadastro do seu pet foi realizado {'\n'}com sucesso!</Text>
+        <Text style={styles.textoConfirmacao}>
+          O cadastro do seu pet foi realizado {"\n"}com sucesso!
+        </Text>
 
-            <Text style={styles.textoInfos}>Certifique-se que permitiu o envio de{'\n'}
-                                            notificações por push no campo{'\n'}
-                                            privacidade do menu configurações do{'\n'}
-                                            aplicativo. Assim, poderemos te avisar{'\n'}
-                                            assim que alguém interessado entrar{'\n'}
-                                            em contato! 
-            </Text>
+        <Text style={styles.textoInfos}>
+          Certifique-se que permitiu o envio de{"\n"}
+          notificações por push no campo{"\n"}
+          privacidade do menu configurações do{"\n"}
+          aplicativo. Assim, poderemos te avisar{"\n"}
+          assim que alguém interessado entrar{"\n"}
+          em contato!
+        </Text>
 
-            <View style={styles.botaoSair}>
-                <TouchableOpacity onPress={() => navigation.navigate("Meus Pets")}>
-                <Text style={styles.textoBotaoSAIR}>MEUS PETS </Text>
-                </TouchableOpacity>
-            </View>
-
+        <View style={styles.botaoSair}>
+          <TouchableOpacity onPress={() => navigation.navigate("Meus Pets")}>
+            <Text style={styles.textoBotaoSAIR}>MEUS PETS </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </ScrollView>
   );
@@ -91,18 +93,18 @@ const styles = StyleSheet.create({
     marginTop: 52,
     fontFamily: "Courgette_400Regular",
     fontSize: 53,
-    color: '#ffd358',
+    color: "#ffd358",
   },
   textoConfirmacao: {
     fontFamily: "Roboto_400Regular",
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
     marginBottom: 35,
   },
   textoInfos: {
     fontFamily: "Roboto_400Regular",
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
     marginLeft: 52,
     marginRight: 52,
   },
@@ -119,9 +121,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   textoBotaoSAIR: {
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
     fontSize: 12,
     color: "#434343",
   },
-
 });
