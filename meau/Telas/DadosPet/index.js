@@ -163,15 +163,6 @@ export default function DadosPet({ route }) {
     navigation.navigate("Remover Pet");
   }
 
-  async function handleShowInterested(){
-    const interested = pet.interested || []
-    if (interested.length){
-      alert("Os interessados sao", interested.join(", "))
-    }else{
-      alert("Esse pet não possui interessados")
-    }
-  }
-
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -519,7 +510,14 @@ export default function DadosPet({ route }) {
           )}
 
           <View style={styles.containerButtom}>
-            <TouchableOpacity style={[styles.Buttom, { marginRight: 16 }]} onPress={handleShowInterested}>
+            <TouchableOpacity
+              style={[styles.Buttom, { marginRight: 16 }]}
+              onPress={() =>
+                navigation.navigate("Interessados", {
+                  interested: pet.interested || [],
+                })
+              }
+            >
               {isEditMode ? (
                 <Text style={styles.textButtom} onPress={handleSaveButtonClick}>
                   ATUALIZAR PET
