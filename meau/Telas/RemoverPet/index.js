@@ -19,37 +19,36 @@ export default function CadastrarPessoa() {
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
 
-            <View style={styles.retangulo1} />
-            <View style={styles.retanguloMenu}>
-            <TouchableOpacity onPress={() => {}}>
-                <View style={styles.iconMenu}>
-                    <Octicons name="three-bars" size={24} /> 
-                </View>
-            </TouchableOpacity>
-            <Text style={styles.textoMenu}>Remover Pet</Text>
+        <View style={styles.retangulo1} />
+        <View style={styles.retanguloMenu}>
+          <TouchableOpacity onPress={() => {}}>
+            <View style={styles.iconMenu}>
+              <Octicons name="three-bars" size={24} />
             </View>
+          </TouchableOpacity>
+          <Text style={styles.textoMenu}>Remover Pet</Text>
+        </View>
 
-            <Text style={styles.textoCentral}>Pronto!</Text>
+        <Text style={styles.textoCentral}>Pronto!</Text>
 
-            <Text style={styles.textoConfirmacao}>O XXX foi removido da nossa lista {'\n'}com sucesso!</Text>
+        <Text style={styles.textoConfirmacao}>
+          O XXX foi removido da nossa lista {"\n"}com sucesso!
+        </Text>
 
-            <Text style={styles.textoInfos}>Porém, as conversas relacionadas à ele{'\n'}
-                                                serão mantidas para o caso de você{'\n'}
-                                                desejar manter contato. Caso deseje{'\n'}
-                                            apagá-las, você pode realizar esta ação{'\n'}
-                                                nas configurações no chat dos{'\n'}
-                                                usuários relacionados à este pet. 
-            </Text>
+        <Text style={styles.textoInfos}>
+          Porém, as conversas relacionadas à ele{"\n"}
+          serão mantidas para o caso de você{"\n"}
+          desejar manter contato. Caso deseje{"\n"}
+          apagá-las, você pode realizar esta ação{"\n"}
+          nas configurações no chat dos{"\n"}
+          usuários relacionados à este pet.
+        </Text>
 
-            <View style={styles.botaoSair}>
-                <TouchableOpacity onPress={() => navigation.navigate("Meus Pets")}>
-                <Text style={styles.textoBotaoSAIR}>VOLTAR À MEUS PETS </Text>
-                </TouchableOpacity>
-            </View>
-
-
-
-
+        <View style={styles.botaoSair}>
+          <TouchableOpacity onPress={() => navigation.navigate("Meus Pets")}>
+            <Text style={styles.textoBotaoSAIR}>VOLTAR À MEUS PETS </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </ScrollView>
   );
@@ -94,18 +93,18 @@ const styles = StyleSheet.create({
     marginTop: 52,
     fontFamily: "Courgette_400Regular",
     fontSize: 53,
-    color: '#88c9bf',
+    color: "#88c9bf",
   },
   textoConfirmacao: {
     fontFamily: "Roboto_400Regular",
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
     marginBottom: 35,
   },
   textoInfos: {
     fontFamily: "Roboto_400Regular",
     fontSize: 14,
-    color: '#757575',
+    color: "#757575",
     marginLeft: 52,
     marginRight: 52,
   },
@@ -122,9 +121,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   textoBotaoSAIR: {
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: "Roboto_400Regular",
     fontSize: 12,
     color: "#434343",
   },
-
 });

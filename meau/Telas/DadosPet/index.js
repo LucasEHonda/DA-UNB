@@ -30,7 +30,7 @@ import {
 } from "firebase/firestore";
 import { userFromStorage } from "../../utils/userFromStorage";
 import { useNavigation } from "@react-navigation/native";
-import { storage } from "../../service/firebase"
+import { storage } from "../../service/firebase";
 import { ref, deleteObject } from "firebase/storage";
 
 export default function DadosPet({ route }) {
@@ -151,16 +151,25 @@ export default function DadosPet({ route }) {
     setIsEditMode(false);
   };
 
-  async function handleRemovePet(){
+  async function handleRemovePet() {
     try {
       const storageRef = ref(storage, pet.fileLink);
       await deleteObject(storageRef);
     } catch (error) {
-      console.error('Erro ao excluir o arquivo: ', error);
-      return
+      console.error("Erro ao excluir o arquivo: ", error);
+      return;
     }
-    await deleteDoc(doc(db, "pets", pet.id))
-    navigation.navigate("Remover Pet")
+    await deleteDoc(doc(db, "pets", pet.id));
+    navigation.navigate("Remover Pet");
+  }
+
+  async function handleShowInterested(){
+    const interested = pet.interested || []
+    if (interested.length){
+      alert("Os interessados sao", interested.join(", "))
+    }else{
+      alert("Esse pet não possui interessados")
+    }
   }
 
   return (
@@ -175,7 +184,8 @@ export default function DadosPet({ route }) {
           <View style={styles.retanguloMenu}>
             <TouchableOpacity
               style={styles.iconArrow}
-              onPress={() => navigation.navigate("Meus Pets")}>
+              onPress={() => navigation.navigate("Meus Pets")}
+            >
               <AntDesign name="arrowleft" size={24} />
             </TouchableOpacity>
 
@@ -509,7 +519,7 @@ export default function DadosPet({ route }) {
           )}
 
           <View style={styles.containerButtom}>
-            <TouchableOpacity style={[styles.Buttom, { marginRight: 16 }]}>
+            <TouchableOpacity style={[styles.Buttom, { marginRight: 16 }]} onPress={handleShowInterested}>
               {isEditMode ? (
                 <Text style={styles.textButtom} onPress={handleSaveButtonClick}>
                   ATUALIZAR PET
@@ -519,9 +529,7 @@ export default function DadosPet({ route }) {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.Buttom}
-              onPress={handleRemovePet}>
+            <TouchableOpacity style={styles.Buttom} onPress={handleRemovePet}>
               <Text style={styles.textButtom}>REMOVER PET</Text>
             </TouchableOpacity>
           </View>
