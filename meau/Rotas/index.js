@@ -18,7 +18,7 @@ import Chat from "../Telas/Chat";
 
 const Drawer = createDrawerNavigator();
 
-function createDrawerNavigator1() {
+function CreateDrawerNavigator1() {
   if (StatusUser() == false) {
     return (
       <Drawer.Navigator initialRouteName="Introducao">
@@ -56,7 +56,7 @@ export default function Rotas() {
         <Drawer.Screen
           options={{ headerShown: false }}
           name="Tela Principal"
-          component={createDrawerNavigator1}
+          component={CreateDrawerNavigator1}
         />
         <Drawer.Screen name="Cadastrar Pet" component={CadastrarPet} />
         <Drawer.Screen name="Meus Pets" component={RegistrarPets} />
@@ -76,7 +76,7 @@ export default function Rotas() {
         <Drawer.Screen
           options={{ headerShown: false }}
           name="Tela Principal"
-          component={createDrawerNavigator1}
+          component={CreateDrawerNavigator1}
         />
       </Drawer.Navigator>
     );
