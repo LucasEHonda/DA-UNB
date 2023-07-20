@@ -12,26 +12,48 @@ import {
 import { Octicons, Feather } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { db } from "../../service/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Interessados({ route }) {
-  const { interested } = route.params;
+  const { interested, pet } = route.params;
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
 
+  async function changePetOwner(user) {
+    const tempPet = { ...pet };
+    delete tempPet.id;
+    await updateDoc(doc(db, "pets", pet.id), {
+      ...tempPet,
+      owner: user.id,
+      interested: [],
+    });
+    alert(
+      `Parabéns! O ${pet.name} foi adotado por ${user.name}!\nLembre-se que agora ele não aparecerá mais na sua lista de pets`
+    );
+    navigation.navigate("Meus Pets");
+  }
+
   async function getUsers(interested) {
-    const usersObjects = [...users];
-    for (const interest of interested) {
-      const docs = await getDocs(
-        query(collection(db, "users"), where("id", "==", interest))
-      );
-      docs.forEach((doc) => {
-        const user = doc.data();
-        usersObjects.push(user);
-      });
+    if (!interested.length) {
+      return;
     }
-    setUsers(usersObjects);
+
+    const querySnapshot = await getDocs(
+      query(collection(db, "users"), where("id", "in", interested))
+    );
+    const users_ = querySnapshot.docs.map((doc) => {
+      const petData = doc.data();
+      return { id: doc.id, ...petData };
+    });
+    setUsers(users_);
   }
 
   useEffect(() => {
@@ -71,10 +93,7 @@ export default function Interessados({ route }) {
                 <Text style={styles.textoNomePet}>{user?.name}</Text>
               </View>
 
-              <TouchableOpacity
-                onPress={() => {}
-                }
-              >
+              <TouchableOpacity onPress={() => {}}>
                 <View style={styles.retanguloFoto}>
                   <Image
                     source={{ uri: user?.profileLink }}
@@ -94,11 +113,24 @@ export default function Interessados({ route }) {
                   {user?.state?.toUpperCase()}
                 </Text>
               </View>
+              <TouchableOpacity
+                style={[styles.Buttom, { marginRight: 16 }]}
+                onPress={() => changePetOwner(user)}
+              >
+                <Text style={styles.textButtom}>
+                  {"Aceitar solicitação de doação".toUpperCase()}
+                </Text>
+              </TouchableOpacity>
             </View>
           ))}
         </KeyboardAvoidingView>
-        <TouchableOpacity style={[styles.Buttom, { marginRight: 16 }]} onPress={() => {navigation.navigate("Chats");}}>
-            <Text style={styles.textButtom}>IR PARA O CHAT</Text>
+        <TouchableOpacity
+          style={[styles.Buttom, { marginRight: 16 }]}
+          onPress={() => {
+            navigation.navigate("Chats");
+          }}
+        >
+          <Text style={styles.textButtom}>IR PARA O CHAT</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </ScrollView>
@@ -260,5 +292,5 @@ const styles = StyleSheet.create({
     marginBottom: 28,
     marginTop: 28,
     borderRadius: 4,
-  }
+  },
 });

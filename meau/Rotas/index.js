@@ -14,6 +14,7 @@ import RemoverPet from "../Telas/RemoverPet";
 import CadastrarPet2 from "../Telas/CadastroPet2";
 import Interessados from "../Telas/Interessados";
 import Chats from "../Telas/Chats";
+import RequestChats from "../Telas/RequestChats";
 import Chat from "../Telas/Chat";
 
 const Drawer = createDrawerNavigator();
@@ -67,6 +68,7 @@ export default function Rotas() {
         <Drawer.Screen name="Cadastrar Pet 2" component={CadastrarPet2} />
         <Drawer.Screen name="Interessados" component={Interessados} />
         <Drawer.Screen name="Chats" component={Chats} />
+        <Drawer.Screen name="RequestChats" component={RequestChats} />
         <Drawer.Screen name="Chat" component={Chat} />
       </Drawer.Navigator>
     );

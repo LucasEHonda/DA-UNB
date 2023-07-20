@@ -19,16 +19,17 @@ import { userFromStorage } from "../../utils/userFromStorage";
 export default function Chats() {
   const navigation = useNavigation();
   const [chats, setChats] = useState([]);
-  const [user, setUser] = useState({});
 
   async function getChats() {
-    const userr = await getUser()
-    const querySnapshot = await getDocs(query(collection(db, "chats"), where("owner", "==", userr.id)))
+    const userr = await getUser();
+    const querySnapshot = await getDocs(
+      query(collection(db, "chats"), where("owner", "==", userr.id))
+    );
     const chats = querySnapshot.docs.map((doc) => {
-        const petData = doc.data();
-        return { id: doc.id, ...petData };
-      })
-    setChats(chats)
+      const petData = doc.data();
+      return { id: doc.id, ...petData };
+    });
+    setChats(chats);
   }
   async function getUser() {
     const user_ = await userFromStorage();
@@ -37,13 +38,12 @@ export default function Chats() {
       query(collection(db, "users"), where("id", "==", user_.uid))
     );
     const user__ = querySnapshot.docs.map((doc) => doc.data())[0];
-    setUser(user__);
-    return user__
+    return user__;
   }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getChats();      
+      getChats();
     });
     return unsubscribe;
   }, [navigation]);
@@ -79,9 +79,13 @@ export default function Chats() {
                 </Text>
               </View>
 
-              <TouchableOpacity onPress={() => {navigation.navigate("Chat", {
-                  messages: chat.messages
-                })}}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Chat", {
+                    chatId: chat.id,
+                  });
+                }}
+              >
                 <View style={styles.retanguloFoto}>
                   <Image
                     source={{ uri: chat?.interestedUser?.profileLink }}
