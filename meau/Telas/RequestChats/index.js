@@ -9,35 +9,42 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Octicons, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Octicons, Feather } from "@expo/vector-icons";
 import { Platform } from "react-native";
 import { db } from "../../service/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { userFromStorage } from "../../utils/userFromStorage";
 import { useNavigation } from "@react-navigation/native";
+import { userFromStorage } from "../../utils/userFromStorage";
 
-export default function PetsAdotar() {
+export default function RequestChats() {
   const navigation = useNavigation();
-  const [pets, setPets] = useState([]);
+  const [chats, setChats] = useState([]);
 
-  async function getPetsByUser() {
-    const user = await userFromStorage();
+  async function getChats() {
+    const userr = await getUser();
     const querySnapshot = await getDocs(
-      query(
-        petCollectionRef,
-        where("owner", "!=", user.uid),
-        where("readyToPublisher", "in", [true, "true"])
-      )
+      query(collection(db, "chats"), where("interestedUser.id", "==", userr.id))
     );
-    setPets(querySnapshot.docs.map((doc) => doc.data()));
+    const chats = querySnapshot.docs.map((doc) => {
+      const petData = doc.data();
+      return { id: doc.id, ...petData };
+    });
+    setChats(chats);
+  }
+  async function getUser() {
+    const user_ = await userFromStorage();
+
+    const querySnapshot = await getDocs(
+      query(collection(db, "users"), where("id", "==", user_.uid))
+    );
+    const user__ = querySnapshot.docs.map((doc) => doc.data())[0];
+    return user__;
   }
 
-  const petCollectionRef = collection(db, "pets");
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getPetsByUser();
+      getChats();
     });
-
     return unsubscribe;
   }, [navigation]);
 
@@ -56,7 +63,7 @@ export default function PetsAdotar() {
                 <Octicons name="three-bars" size={24} />
               </View>
             </TouchableOpacity>
-            <Text style={styles.textoMenu}>Adotar</Text>
+            <Text style={styles.textoMenu}>Chats</Text>
             <TouchableOpacity onPress={() => {}}>
               <View style={styles.iconLupa}>
                 <Feather name="search" size={24} />
@@ -64,25 +71,24 @@ export default function PetsAdotar() {
             </TouchableOpacity>
           </View>
           <View style={styles.separatorLine} />
-          {pets.map((pet) => (
-            <View key={pet._id}>
+          {chats.map((chat) => (
+            <View key={chat?.id}>
               <View style={styles.retanguloNomePet}>
-                <Text style={styles.textoNomePet}>{pet.name}</Text>
-                <MaterialIcons
-                  name="favorite-outline"
-                  size={24}
-                  style={styles.iconError}
-                />
+                <Text style={styles.textoNomePet}>
+                  {chat?.interestedUser?.name} | {chat?.pet?.name}
+                </Text>
               </View>
 
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Dados Pets Adotar", { pet })
-                }
+                onPress={() => {
+                  navigation.navigate("Chat", {
+                    chatId: chat.id,
+                  });
+                }}
               >
                 <View style={styles.retanguloFoto}>
                   <Image
-                    source={{ uri: pet.fileLink }}
+                    source={{ uri: chat?.interestedUser?.profileLink }}
                     style={styles.petImage}
                   />
                 </View>
@@ -90,13 +96,7 @@ export default function PetsAdotar() {
 
               <View style={styles.retanguloinformacoes}>
                 <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>
-                  {pet.gender.toUpperCase()}
-                </Text>
-                <Text style={[styles.textoinformacoes, { marginRight: 55 }]}>
-                  {pet.age.toUpperCase()}
-                </Text>
-                <Text style={styles.textoinformacoes}>
-                  {pet.size.toUpperCase()}
+                  {chat?.messages[chat?.messages?.length - 1]?.message}
                 </Text>
               </View>
             </View>
@@ -245,5 +245,22 @@ const styles = StyleSheet.create({
   petImage: {
     width: 344,
     height: 183,
+  },
+  textButtom: {
+    fontSize: 12,
+    fontFamily: "Roboto_500Medium",
+    color: "#757575",
+  },
+  Buttom: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 148,
+    height: 40,
+    borderWidth: 2,
+    borderColor: "#88c9bf",
+    backgroundColor: "#88c9bf",
+    marginBottom: 28,
+    marginTop: 28,
+    borderRadius: 4,
   },
 });

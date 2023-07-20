@@ -18,8 +18,11 @@ import {
   where,
   updateDoc,
   doc,
+  addDoc,
 } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { userFromStorage } from "../../utils/userFromStorage";
+import { v4 as uuidv4 } from "uuid";
 
 export default function DadosPetsAdotar({ route }) {
   const navigation = useNavigation();
@@ -34,22 +37,73 @@ export default function DadosPetsAdotar({ route }) {
     setOwner(querySnapshot.docs.map((doc) => doc.data())[0]);
   }
   const [owner, setOwner] = useState({});
+  const [user, setUser] = useState({});
+  async function getUser() {
+    const user_ = await userFromStorage();
+
+    const querySnapshot = await getDocs(
+      query(collection(db, "users"), where("id", "==", user_.uid))
+    );
+    const user__ = querySnapshot.docs.map((doc) => doc.data())[0];
+    setUser(user__);
+    return user__;
+  }
   useEffect(() => {
     getOwner(pet.owner);
+    getUser();
   }, []);
 
   async function handleInterest() {
     const interested = pet.interested || [];
-    if (interested.includes(owner.id)) {
-      alert("Você ja está listado como interessado para esse pet.");
+    if (interested.includes(user.id)) {
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, "chats"),
+          where("pet.id", "==", pet.id),
+          where("interestedUser.id", "==", user.id),
+          where("owner", "==", pet.owner)
+        )
+      );
+      const chatId = querySnapshot.docs.map((doc) => {
+        const petData = doc.data();
+        return { id: doc.id, ...petData };
+      })[0].id;
+
+      navigation.navigate("Chat", { chatId });
+      return;
     }
-    interested.push(owner.id);
+    interested.push(user.id);
     const newPet = {
       ...pet,
       interested,
     };
     delete newPet.id;
     await updateDoc(doc(db, "pets", pet.id), newPet);
+    const chat = {
+      interestedUser: {
+        id: user.id,
+        name: user.name,
+        profileLink: user.profileLink,
+      },
+      messages: [
+        {
+          date: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          id: uuidv4(),
+          message: `Olá, tenho interesse em adotar seu pet ${pet.name}!`,
+          messageBy: "interested",
+        },
+      ],
+      owner: pet.owner,
+      pet: {
+        id: pet.id,
+        name: pet.name,
+      },
+    };
+    const chatRef = await addDoc(collection(db, "chats"), chat);
+    navigation.navigate("Chat", { chatId: chatRef.id });
   }
 
   return (
@@ -102,7 +156,6 @@ export default function DadosPetsAdotar({ route }) {
             <Text style={styles.infoLabel}>LOCALIZAÇÃO</Text>
           </View>
           <View style={styles.infoRow}>
-            {console.log(owner)}
             <Text style={styles.infoValue}>
               {owner?.address?.toLowerCase()}
             </Text>
@@ -167,8 +220,10 @@ export default function DadosPetsAdotar({ route }) {
           </View>
 
           <TouchableOpacity style={styles.CADASTRO} onPress={handleInterest}>
-            {(pet.interested || []).includes(owner.id) ? (
-              <Text style={styles.textoCADASTRO}>NA LISTA PARA ADOÇÃO</Text>
+            {(pet.interested || []).includes(user.id) ? (
+              <Text style={styles.textoCADASTRO}>
+                NA LISTA PARA ADOÇÃO - ABRIR CHAT
+              </Text>
             ) : (
               <Text style={styles.textoCADASTRO}>PRETENDO ADOTAR</Text>
             )}

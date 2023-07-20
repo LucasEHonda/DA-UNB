@@ -515,6 +515,7 @@ export default function DadosPet({ route }) {
               onPress={() =>
                 navigation.navigate("Interessados", {
                   interested: pet.interested || [],
+                  pet: pet,
                 })
               }
             >
